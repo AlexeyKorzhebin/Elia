@@ -158,7 +158,7 @@ const Utils = {
     showLoader(text = 'Загрузка...') {
         return `
             <div class="text-center py-12">
-                <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-elia-purple"></div>
+                <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-elia-lavender"></div>
                 <p class="mt-4 text-gray-600">${text}</p>
             </div>
         `;

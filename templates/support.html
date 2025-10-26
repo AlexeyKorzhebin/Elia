@@ -19,11 +19,12 @@
             theme: {
                 extend: {
                     colors: {
-                        'elia-purple': '#8B5CF6',
-                        'elia-blue': '#60A5FA',
-                        'elia-cyan': '#22D3EE',
-                        'elia-pink': '#EC4899',
-                        'elia-yellow': '#FBBF24',
+                        'elia-dark': '#1A1A1A',
+                        'elia-lavender': '#D0BAFF',
+                        'elia-cyan': '#CFFAFE',
+                        'elia-pink': '#FCE7F3',
+                        'elia-yellow': '#FEF3C7',
+                        'elia-green': '#D1FAE5',
                     }
                 }
             }
@@ -36,12 +37,9 @@
         <aside class="w-64 bg-white border-r border-gray-200 flex flex-col">
             <!-- Логотип -->
             <div class="p-6">
-                <div class="flex items-center space-x-2">
-                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M16 4L8 8V16C8 21.5 11.5 26.5 16 28C20.5 26.5 24 21.5 24 16V8L16 4Z" fill="#8B5CF6"/>
-                        <path d="M16 4L8 8V16C8 21.5 11.5 26.5 16 28C20.5 26.5 24 21.5 24 16V8L16 4Z" stroke="#8B5CF6" stroke-width="2"/>
-                    </svg>
-                    <span class="text-2xl font-medium" style="color: #8B5CF6;">elia</span>
+                <div class="flex items-center space-x-3">
+                    <img src="/static/images/logo-icon.svg" alt="Elia" width="32" height="32">
+                    <span class="text-2xl font-normal tracking-tight" style="color: #1A1A1A; letter-spacing: -0.5px;">elia</span>
                 </div>
             </div>
             
@@ -73,7 +71,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="/support" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-elia-purple bg-purple-50">
+                        <a href="/support" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-elia-dark bg-elia-lavender font-medium">
                             <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-2 0c0 .993-.241 1.929-.668 2.754l-1.524-1.525a3.997 3.997 0 00.078-2.183l1.562-1.562C9.927 8.515 10 9.246 10 10zm-5.165 3.913l1.58 1.58A5.98 5.98 0 0110 16a5.976 5.976 0 01-2.516-.552l1.562-1.562a4.006 4.006 0 001.789-.973zm-2.633-2.633a3.996 3.996 0 01-.973-1.789l-1.562 1.562A5.976 5.976 0 004 10c0-.92.236-1.785.668-2.754l1.524 1.525a3.997 3.997 0 00-.078 2.183l-1.562 1.562A5.99 5.99 0 014 10c0-.993.241-1.929.668-2.754l1.524 1.525zm7.758-3.326L13.446 7.5a4 4 0 00-1.789-.973l-1.58-1.58A5.98 5.98 0 0110 4c.92 0 1.785.236 2.754.668l-1.525 1.524a3.997 3.997 0 00-2.183.078L7.5 4.708A5.99 5.99 0 0110 4z"/>
                             </svg>
@@ -94,7 +92,7 @@
             <!-- Профиль врача -->
             <div class="p-4 border-t border-gray-200">
                 <div class="flex items-center space-x-3">
-                    <img src="https://ui-avatars.com/api/?name=Тимофей+Арзамасцев&background=8B5CF6&color=fff" 
+                    <img src="https://ui-avatars.com/api/?name=Тимофей+Арзамасцев&background=D0BAFF&color=1A1A1A" 
                          alt="Врач" 
                          class="w-10 h-10 rounded-full">
                     <div class="flex-1 min-w-0">
@@ -118,7 +116,7 @@
                 <!-- Быстрые ссылки -->
                 <div class="grid grid-cols-3 gap-4 mb-6">
                     <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6 cursor-pointer hover:shadow-lg transition-shadow">
-                        <div class="w-12 h-12 bg-elia-purple rounded-lg flex items-center justify-center mb-4">
+                        <div class="w-12 h-12 bg-elia-lavender rounded-lg flex items-center justify-center mb-4">
                             <svg width="24" height="24" fill="white" viewBox="0 0 20 20">
                                 <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"/>
                             </svg>
@@ -156,7 +154,7 @@
                     <form class="space-y-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Тема обращения</label>
-                            <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-elia-purple">
+                            <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-elia-lavender">
                                 <option>Техническая проблема</option>
                                 <option>Вопрос по функционалу</option>
                                 <option>Предложение по улучшению</option>
@@ -169,7 +167,7 @@
                             <label class="block text-sm font-medium text-gray-700 mb-2">Заголовок</label>
                             <input type="text" 
                                    placeholder="Краткое описание проблемы" 
-                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-elia-purple">
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-elia-lavender">
                         </div>
                         
                         <div>
@@ -177,7 +175,7 @@
                             <textarea 
                                 rows="6"
                                 placeholder="Подробно опишите вашу проблему или вопрос..."
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-elia-purple resize-vertical"></textarea>
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-elia-lavender resize-vertical"></textarea>
                         </div>
                         
                         <div>
@@ -214,7 +212,7 @@
                             <button type="button" class="px-6 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">
                                 Отмена
                             </button>
-                            <button type="submit" class="px-6 py-2 text-white bg-gradient-to-r from-elia-purple to-elia-blue rounded-lg hover:opacity-90">
+                            <button type="submit" class="px-6 py-2 text-elia-dark bg-elia-lavender rounded-xl hover:bg-opacity-90 font-medium transition-all hover:shadow-lg">
                                 Отправить обращение
                             </button>
                         </div>
@@ -296,7 +294,7 @@
                 </div>
                 
                 <!-- Контакты -->
-                <div class="mt-6 bg-gradient-to-r from-elia-purple to-elia-blue rounded-lg p-6 text-white">
+                <div class="mt-6 bg-elia-lavender rounded-lg p-6 text-elia-dark">
                     <h3 class="text-xl font-semibold mb-3">Нужна срочная помощь?</h3>
                     <p class="mb-4">Свяжитесь с нами напрямую по телефону или email</p>
                     <div class="flex items-center space-x-6">

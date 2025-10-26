@@ -1,0 +1,24 @@
+<svg width="120" height="40" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Иконка креста -->
+  <g>
+    <!-- Левая часть креста -->
+    <path d="M8 14C8 10 10 8 14 8H18V18C18 22 16 24 12 24C8 24 6 22 6 18V14H8Z" fill="white"/>
+    <path d="M8 14C8 10 10 8 14 8H18V18C18 22 16 24 12 24C8 24 6 22 6 18V14H8Z" fill="#D0BAFF"/>
+    
+    <!-- Правая часть креста -->
+    <rect x="18" y="18" width="10" height="10" rx="2" fill="white"/>
+    
+    <!-- Верхняя часть креста (с плюсиками) -->
+    <circle cx="24" cy="6" r="1.5" fill="#D0BAFF"/>
+    <circle cx="28" cy="6" r="1.5" fill="#D0BAFF"/>
+    <path d="M26 4L26 8M24 6L28 6" stroke="#D0BAFF" stroke-width="1" stroke-linecap="round"/>
+    
+    <circle cx="24" cy="24" r="1.5" fill="#D0BAFF"/>
+    <circle cx="28" cy="28" r="1.5" fill="#D0BAFF"/>
+    <path d="M26 22L26 26M24 24L28 24" stroke="#D0BAFF" stroke-width="1" stroke-linecap="round"/>
+  </g>
+  
+  <!-- Текст "elia" -->
+  <text x="38" y="28" font-family="system-ui, -apple-system, sans-serif" font-size="24" font-weight="400" fill="#1A1A1A" letter-spacing="-0.5">elia</text>
+</svg>
+

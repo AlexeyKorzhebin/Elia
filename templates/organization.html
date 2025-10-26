@@ -19,11 +19,12 @@
             theme: {
                 extend: {
                     colors: {
-                        'elia-purple': '#8B5CF6',
-                        'elia-blue': '#60A5FA',
-                        'elia-cyan': '#22D3EE',
-                        'elia-pink': '#EC4899',
-                        'elia-yellow': '#FBBF24',
+                        'elia-dark': '#1A1A1A',
+                        'elia-lavender': '#D0BAFF',
+                        'elia-cyan': '#CFFAFE',
+                        'elia-pink': '#FCE7F3',
+                        'elia-yellow': '#FEF3C7',
+                        'elia-green': '#D1FAE5',
                     }
                 }
             }
@@ -36,12 +37,9 @@
         <aside class="w-64 bg-white border-r border-gray-200 flex flex-col">
             <!-- Логотип -->
             <div class="p-6">
-                <div class="flex items-center space-x-2">
-                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M16 4L8 8V16C8 21.5 11.5 26.5 16 28C20.5 26.5 24 21.5 24 16V8L16 4Z" fill="#8B5CF6"/>
-                        <path d="M16 4L8 8V16C8 21.5 11.5 26.5 16 28C20.5 26.5 24 21.5 24 16V8L16 4Z" stroke="#8B5CF6" stroke-width="2"/>
-                    </svg>
-                    <span class="text-2xl font-medium" style="color: #8B5CF6;">elia</span>
+                <div class="flex items-center space-x-3">
+                    <img src="/static/images/logo-icon.svg" alt="Elia" width="32" height="32">
+                    <span class="text-2xl font-normal tracking-tight" style="color: #1A1A1A; letter-spacing: -0.5px;">elia</span>
                 </div>
             </div>
             
@@ -57,7 +55,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="/organization" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-elia-purple bg-purple-50">
+                        <a href="/organization" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-elia-dark bg-elia-lavender font-medium">
                             <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
                             </svg>
@@ -94,7 +92,7 @@
             <!-- Профиль врача -->
             <div class="p-4 border-t border-gray-200">
                 <div class="flex items-center space-x-3">
-                    <img src="https://ui-avatars.com/api/?name=Тимофей+Арзамасцев&background=8B5CF6&color=fff" 
+                    <img src="https://ui-avatars.com/api/?name=Тимофей+Арзамасцев&background=D0BAFF&color=1A1A1A" 
                          alt="Врач" 
                          class="w-10 h-10 rounded-full">
                     <div class="flex-1 min-w-0">
@@ -111,7 +109,7 @@
             <header class="bg-white border-b border-gray-200 px-8 py-6">
                 <div class="flex items-center justify-between">
                     <h1 class="text-3xl font-semibold text-gray-900">Организация</h1>
-                    <button class="px-4 py-2 text-sm text-white bg-gradient-to-r from-elia-purple to-elia-blue rounded-lg hover:opacity-90 flex items-center space-x-2">
+                    <button class="px-5 py-2.5 text-sm text-elia-dark bg-elia-lavender rounded-xl hover:bg-opacity-90 flex items-center space-x-2 font-medium transition-all hover:shadow-lg">
                         <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
                         </svg>
@@ -168,7 +166,7 @@
                 <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
                     <div class="flex items-center justify-between mb-4">
                         <h2 class="text-xl font-semibold text-gray-900">Сотрудники</h2>
-                        <button class="px-4 py-2 text-sm text-elia-purple border border-elia-purple rounded-lg hover:bg-purple-50">
+                        <button class="px-4 py-2 text-sm text-elia-dark border border-elia-lavender rounded-lg hover:bg-elia-lavender hover:bg-opacity-20">
                             + Добавить сотрудника
                         </button>
                     </div>
@@ -177,7 +175,7 @@
                     <div class="space-y-3">
                         <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
                             <div class="flex items-center space-x-4">
-                                <img src="https://ui-avatars.com/api/?name=Тимофей+Арзамасцев&background=8B5CF6&color=fff" 
+                                <img src="https://ui-avatars.com/api/?name=Тимофей+Арзамасцев&background=D0BAFF&color=1A1A1A" 
                                      alt="Врач" 
                                      class="w-12 h-12 rounded-full">
                                 <div>
@@ -222,7 +220,7 @@
                     <div class="grid grid-cols-3 gap-4">
                         <div class="p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg">
                             <p class="text-sm text-gray-600 mb-1">Всего врачей</p>
-                            <p class="text-3xl font-bold text-elia-purple">12</p>
+                            <p class="text-3xl font-bold text-elia-lavender">12</p>
                         </div>
                         <div class="p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg">
                             <p class="text-sm text-gray-600 mb-1">Всего пациентов</p>

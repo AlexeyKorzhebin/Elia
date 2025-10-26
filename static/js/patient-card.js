@@ -141,7 +141,7 @@ const PatientCard = {
         this.currentTab = tab;
         
         // Обновляем стили кнопок
-        $('.tab-button').removeClass('tab-active bg-elia-purple text-white').addClass('bg-gray-100 text-gray-700');
+        $('.tab-button').removeClass('tab-active bg-elia-lavender text-elia-dark').addClass('bg-gray-100 text-gray-700');
         $(`.tab-button[data-tab="${tab}"]`).removeClass('bg-gray-100 text-gray-700').addClass('tab-active');
         
         // Рендерим контент
@@ -241,7 +241,7 @@ const PatientCard = {
                 <div class="section-green">
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="font-semibold text-lg">Основные показатели здоровья</h3>
-                        <a href="#" class="text-sm text-elia-purple hover:underline">Подробнее</a>
+                        <a href="#" class="text-sm text-elia-lavender hover:underline">Подробнее</a>
                     </div>
                     <div class="grid grid-cols-4 gap-4">
                         <div class="health-card">
@@ -309,7 +309,7 @@ const PatientCard = {
                         <label class="block text-sm font-medium text-gray-700 mb-2">Цель обращения</label>
                         <textarea 
                             id="purpose-field"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-elia-purple"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-elia-lavender"
                             rows="3"
                             placeholder="Опишите цель обращения пациента..."
                         >${report.purpose || ''}</textarea>
@@ -320,7 +320,7 @@ const PatientCard = {
                         <label class="block text-sm font-medium text-gray-700 mb-2">Жалобы пациента</label>
                         <textarea 
                             id="complaints-field"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-elia-purple"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-elia-lavender"
                             rows="4"
                             placeholder="Опишите жалобы пациента..."
                         >${report.complaints || ''}</textarea>
@@ -331,7 +331,7 @@ const PatientCard = {
                         <label class="block text-sm font-medium text-gray-700 mb-2">Анамнез</label>
                         <textarea 
                             id="anamnesis-field"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-elia-purple"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-elia-lavender"
                             rows="6"
                             placeholder="Опишите анамнез..."
                         >${report.anamnesis || ''}</textarea>

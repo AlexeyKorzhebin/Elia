@@ -1,4 +1,19 @@
-/* Custom CSS styles */
+/* Custom CSS styles - Elia Design System */
+
+/* Цветовая палитра из Figma */
+:root {
+    --elia-dark: #1A1A1A;
+    --elia-lavender: #D0BAFF;
+    --elia-cyan: #CFFAFE;
+    --elia-pink: #FCE7F3;
+    --elia-yellow: #FEF3C7;
+    --elia-green: #D1FAE5;
+    --elia-white: #FFFFFF;
+    --elia-gray-50: #F9FAFB;
+    --elia-gray-100: #F3F4F6;
+    --elia-gray-200: #E5E7EB;
+    --elia-gray-600: #6B7280;
+}
 
 /* Smooth transitions */
 * {
@@ -12,16 +27,16 @@
 }
 
 ::-webkit-scrollbar-track {
-    background: #f1f1f1;
+    background: var(--elia-gray-100);
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
+    background: var(--elia-lavender);
     border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #94a3b8;
+    background: #C0A7FF;
 }
 
 /* Card hover effect */
@@ -36,42 +51,42 @@
 }
 
 .appointment-card.active {
-    background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
-    color: white;
+    background: var(--elia-lavender);
+    color: var(--elia-dark);
 }
 
 .appointment-card.active .badge {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
+    background: rgba(255, 255, 255, 0.5);
+    color: var(--elia-dark);
 }
 
 /* Badge styles */
 .badge {
     display: inline-block;
-    padding: 4px 12px;
-    border-radius: 12px;
+    padding: 6px 14px;
+    border-radius: 16px;
     font-size: 0.75rem;
     font-weight: 500;
 }
 
 .badge-cyan {
-    background-color: #CFFAFE;
+    background-color: var(--elia-cyan);
     color: #0E7490;
 }
 
 .badge-pink {
-    background-color: #FCE7F3;
+    background-color: var(--elia-pink);
     color: #BE185D;
 }
 
 .badge-yellow {
-    background-color: #FEF3C7;
+    background-color: var(--elia-yellow);
     color: #B45309;
 }
 
 .badge-purple {
-    background-color: #EDE9FE;
-    color: #6D28D9;
+    background-color: var(--elia-lavender);
+    color: var(--elia-dark);
 }
 
 /* Toast notifications */
@@ -114,21 +129,21 @@
 /* Progress bar */
 .progress-bar {
     height: 4px;
-    background-color: #E5E7EB;
+    background-color: var(--elia-gray-200);
     border-radius: 2px;
     overflow: hidden;
 }
 
 .progress-bar-fill {
     height: 100%;
-    background: linear-gradient(90deg, #8B5CF6 0%, #60A5FA 100%);
+    background: var(--elia-lavender);
     transition: width 0.3s ease;
 }
 
 /* Loading spinner */
 .spinner {
-    border: 3px solid #f3f4f6;
-    border-top: 3px solid #8B5CF6;
+    border: 3px solid var(--elia-gray-100);
+    border-top: 3px solid var(--elia-lavender);
     border-radius: 50%;
     width: 24px;
     height: 24px;
@@ -142,8 +157,8 @@
 
 /* Tab active state */
 .tab-active {
-    background-color: #8B5CF6 !important;
-    color: white !important;
+    background-color: var(--elia-lavender) !important;
+    color: var(--elia-dark) !important;
 }
 
 /* Health indicator card */
@@ -170,7 +185,7 @@
 
 /* Drag & drop area */
 .drop-zone {
-    border: 2px dashed #D1D5DB;
+    border: 2px dashed var(--elia-gray-200);
     border-radius: 12px;
     padding: 40px;
     text-align: center;
@@ -180,7 +195,7 @@
 
 .drop-zone:hover,
 .drop-zone.drag-over {
-    border-color: #8B5CF6;
+    border-color: var(--elia-lavender);
     background-color: #F5F3FF;
 }
 
@@ -197,18 +212,20 @@ audio::-webkit-media-controls-panel {
 
 /* Gradient button */
 .btn-gradient {
-    background: linear-gradient(135deg, #8B5CF6 0%, #60A5FA 100%);
-    color: white;
+    background: var(--elia-lavender);
+    color: var(--elia-dark);
     padding: 12px 24px;
-    border-radius: 8px;
+    border-radius: 12px;
     border: none;
     font-weight: 500;
     cursor: pointer;
-    transition: opacity 0.2s;
+    transition: all 0.2s;
 }
 
 .btn-gradient:hover {
-    opacity: 0.9;
+    background: #C0A7FF;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(208, 186, 255, 0.3);
 }
 
 .btn-gradient:disabled {
@@ -227,42 +244,42 @@ textarea {
     font-size: 1.25rem;
     font-weight: 600;
     margin-bottom: 16px;
-    color: #111827;
+    color: var(--elia-dark);
 }
 
-/* Color-coded sections */
+/* Color-coded sections - из дизайна Figma */
 .section-cyan {
-    background-color: #CFFAFE;
-    padding: 20px;
-    border-radius: 12px;
+    background-color: var(--elia-cyan);
+    padding: 24px;
+    border-radius: 16px;
     margin-bottom: 16px;
 }
 
 .section-pink {
-    background-color: #FCE7F3;
-    padding: 20px;
-    border-radius: 12px;
+    background-color: var(--elia-pink);
+    padding: 24px;
+    border-radius: 16px;
     margin-bottom: 16px;
 }
 
 .section-yellow {
-    background-color: #FEF3C7;
-    padding: 20px;
-    border-radius: 12px;
+    background-color: var(--elia-yellow);
+    padding: 24px;
+    border-radius: 16px;
     margin-bottom: 16px;
 }
 
-.section-blue {
-    background-color: #DBEAFE;
-    padding: 20px;
-    border-radius: 12px;
+.section-lavender {
+    background-color: var(--elia-lavender);
+    padding: 24px;
+    border-radius: 16px;
     margin-bottom: 16px;
 }
 
 .section-green {
-    background-color: #D1FAE5;
-    padding: 20px;
-    border-radius: 12px;
+    background-color: var(--elia-green);
+    padding: 24px;
+    border-radius: 16px;
     margin-bottom: 16px;
 }
 

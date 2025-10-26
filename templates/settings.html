@@ -19,11 +19,12 @@
             theme: {
                 extend: {
                     colors: {
-                        'elia-purple': '#8B5CF6',
-                        'elia-blue': '#60A5FA',
-                        'elia-cyan': '#22D3EE',
-                        'elia-pink': '#EC4899',
-                        'elia-yellow': '#FBBF24',
+                        'elia-dark': '#1A1A1A',
+                        'elia-lavender': '#D0BAFF',
+                        'elia-cyan': '#CFFAFE',
+                        'elia-pink': '#FCE7F3',
+                        'elia-yellow': '#FEF3C7',
+                        'elia-green': '#D1FAE5',
                     }
                 }
             }
@@ -36,12 +37,9 @@
         <aside class="w-64 bg-white border-r border-gray-200 flex flex-col">
             <!-- Логотип -->
             <div class="p-6">
-                <div class="flex items-center space-x-2">
-                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M16 4L8 8V16C8 21.5 11.5 26.5 16 28C20.5 26.5 24 21.5 24 16V8L16 4Z" fill="#8B5CF6"/>
-                        <path d="M16 4L8 8V16C8 21.5 11.5 26.5 16 28C20.5 26.5 24 21.5 24 16V8L16 4Z" stroke="#8B5CF6" stroke-width="2"/>
-                    </svg>
-                    <span class="text-2xl font-medium" style="color: #8B5CF6;">elia</span>
+                <div class="flex items-center space-x-3">
+                    <img src="/static/images/logo-icon.svg" alt="Elia" width="32" height="32">
+                    <span class="text-2xl font-normal tracking-tight" style="color: #1A1A1A; letter-spacing: -0.5px;">elia</span>
                 </div>
             </div>
             
@@ -65,7 +63,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="/settings" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-elia-purple bg-purple-50">
+                        <a href="/settings" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-elia-dark bg-elia-lavender font-medium">
                             <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/>
                             </svg>
@@ -94,7 +92,7 @@
             <!-- Профиль врача -->
             <div class="p-4 border-t border-gray-200">
                 <div class="flex items-center space-x-3">
-                    <img src="https://ui-avatars.com/api/?name=Тимофей+Арзамасцев&background=8B5CF6&color=fff" 
+                    <img src="https://ui-avatars.com/api/?name=Тимофей+Арзамасцев&background=D0BAFF&color=1A1A1A" 
                          alt="Врач" 
                          class="w-10 h-10 rounded-full">
                     <div class="flex-1 min-w-0">
@@ -119,10 +117,10 @@
                     <h2 class="text-xl font-semibold text-gray-900 mb-4">Профиль</h2>
                     <div class="flex items-start space-x-6 mb-6">
                         <div class="flex-shrink-0">
-                            <img src="https://ui-avatars.com/api/?name=Тимофей+Арзамасцев&background=8B5CF6&color=fff&size=96" 
+                            <img src="https://ui-avatars.com/api/?name=Тимофей+Арзамасцев&background=D0BAFF&color=1A1A1A&size=96" 
                                  alt="Фото профиля" 
                                  class="w-24 h-24 rounded-full">
-                            <button class="mt-2 text-sm text-elia-purple hover:underline">Изменить фото</button>
+                            <button class="mt-2 text-sm text-elia-lavender hover:underline">Изменить фото</button>
                         </div>
                         <div class="flex-1 space-y-4">
                             <div class="grid grid-cols-2 gap-4">
@@ -130,31 +128,31 @@
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Имя</label>
                                     <input type="text" 
                                            value="Тимофей" 
-                                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-elia-purple">
+                                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-elia-lavender">
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Фамилия</label>
                                     <input type="text" 
                                            value="Арзамасцев" 
-                                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-elia-purple">
+                                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-elia-lavender">
                                 </div>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Должность</label>
                                 <input type="text" 
                                        value="Главный врач" 
-                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-elia-purple">
+                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-elia-lavender">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
                                 <input type="email" 
                                        value="t.arzamastsev@clinic.ru" 
-                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-elia-purple">
+                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-elia-lavender">
                             </div>
                         </div>
                     </div>
                     <div class="flex justify-end">
-                        <button class="px-6 py-2 text-white bg-gradient-to-r from-elia-purple to-elia-blue rounded-lg hover:opacity-90">
+                        <button class="px-6 py-2 text-elia-dark bg-elia-lavender rounded-xl hover:bg-opacity-90 font-medium transition-all hover:shadow-lg">
                             Сохранить изменения
                         </button>
                     </div>
@@ -168,23 +166,23 @@
                             <label class="block text-sm font-medium text-gray-700 mb-2">Текущий пароль</label>
                             <input type="password" 
                                    placeholder="••••••••" 
-                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-elia-purple">
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-elia-lavender">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Новый пароль</label>
                             <input type="password" 
                                    placeholder="••••••••" 
-                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-elia-purple">
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-elia-lavender">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Подтвердите новый пароль</label>
                             <input type="password" 
                                    placeholder="••••••••" 
-                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-elia-purple">
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-elia-lavender">
                         </div>
                     </div>
                     <div class="flex justify-end mt-4">
-                        <button class="px-6 py-2 text-white bg-gradient-to-r from-elia-purple to-elia-blue rounded-lg hover:opacity-90">
+                        <button class="px-6 py-2 text-elia-dark bg-elia-lavender rounded-xl hover:bg-opacity-90 font-medium transition-all hover:shadow-lg">
                             Изменить пароль
                         </button>
                     </div>
@@ -201,7 +199,7 @@
                             </div>
                             <label class="relative inline-flex items-center cursor-pointer">
                                 <input type="checkbox" checked class="sr-only peer">
-                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-elia-purple"></div>
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-elia-lavender"></div>
                             </label>
                         </div>
                         
@@ -212,7 +210,7 @@
                             </div>
                             <label class="relative inline-flex items-center cursor-pointer">
                                 <input type="checkbox" class="sr-only peer">
-                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-elia-purple"></div>
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-elia-lavender"></div>
                             </label>
                         </div>
                         
@@ -223,7 +221,7 @@
                             </div>
                             <label class="relative inline-flex items-center cursor-pointer">
                                 <input type="checkbox" checked class="sr-only peer">
-                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-elia-purple"></div>
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-elia-lavender"></div>
                             </label>
                         </div>
                     </div>
@@ -243,7 +241,7 @@
                                     <p class="text-sm text-gray-500">Синхронизация данных пациентов</p>
                                 </div>
                             </div>
-                            <button class="px-4 py-2 text-sm text-elia-purple border border-elia-purple rounded-lg hover:bg-purple-50">
+                            <button class="px-4 py-2 text-sm text-elia-dark border border-elia-lavender rounded-lg hover:bg-elia-lavender hover:bg-opacity-20">
                                 Настроить
                             </button>
                         </div>
@@ -258,7 +256,7 @@
                                     <p class="text-sm text-gray-500">Получение результатов анализов</p>
                                 </div>
                             </div>
-                            <button class="px-4 py-2 text-sm text-elia-purple border border-elia-purple rounded-lg hover:bg-purple-50">
+                            <button class="px-4 py-2 text-sm text-elia-dark border border-elia-lavender rounded-lg hover:bg-elia-lavender hover:bg-opacity-20">
                                 Настроить
                             </button>
                         </div>
