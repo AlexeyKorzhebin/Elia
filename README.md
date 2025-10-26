@@ -288,3 +288,4 @@ MIT License — см. файл [LICENSE](LICENSE) для деталей.
 - [Развёртывание на Ubuntu](docs/UBUNTU_DEPLOYMENT.md)
 - [Управление сервером](scripts/README.md)
 - [SSH настройка](docs/SSH_SETUP.md)
+- [Шпаргалки](docs/cheatsheets/) — быстрые справочники по командам
