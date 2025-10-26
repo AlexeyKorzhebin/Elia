@@ -75,6 +75,58 @@ async def root(request: Request):
     )
 
 
+@app.get("/organization", response_class=HTMLResponse)
+async def organization(request: Request):
+    """Страница организации"""
+    return templates.TemplateResponse(
+        "organization.html",
+        {
+            "request": request,
+            "app_name": settings.app_name,
+            "version": settings.version
+        }
+    )
+
+
+@app.get("/settings", response_class=HTMLResponse)
+async def settings_page(request: Request):
+    """Страница настроек"""
+    return templates.TemplateResponse(
+        "settings.html",
+        {
+            "request": request,
+            "app_name": settings.app_name,
+            "version": settings.version
+        }
+    )
+
+
+@app.get("/support", response_class=HTMLResponse)
+async def support(request: Request):
+    """Страница поддержки"""
+    return templates.TemplateResponse(
+        "support.html",
+        {
+            "request": request,
+            "app_name": settings.app_name,
+            "version": settings.version
+        }
+    )
+
+
+@app.get("/about", response_class=HTMLResponse)
+async def about(request: Request):
+    """Страница о нас"""
+    return templates.TemplateResponse(
+        "about.html",
+        {
+            "request": request,
+            "app_name": settings.app_name,
+            "version": settings.version
+        }
+    )
+
+
 @app.get("/health")
 async def health_check():
     """Проверка работоспособности сервиса"""

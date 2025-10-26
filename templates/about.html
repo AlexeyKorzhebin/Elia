@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>О нас - {{ app_name }}</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/styles.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'elia-purple': '#8B5CF6',
+                        'elia-blue': '#60A5FA',
+                        'elia-cyan': '#22D3EE',
+                        'elia-pink': '#EC4899',
+                        'elia-yellow': '#FBBF24',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gradient-to-br from-purple-50 via-blue-50 to-cyan-50 font-sans">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Боковая панель -->
+        <aside class="w-64 bg-white border-r border-gray-200 flex flex-col">
+            <!-- Логотип -->
+            <div class="p-6">
+                <div class="flex items-center space-x-2">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M16 4L8 8V16C8 21.5 11.5 26.5 16 28C20.5 26.5 24 21.5 24 16V8L16 4Z" fill="#8B5CF6"/>
+                        <path d="M16 4L8 8V16C8 21.5 11.5 26.5 16 28C20.5 26.5 24 21.5 24 16V8L16 4Z" stroke="#8B5CF6" stroke-width="2"/>
+                    </svg>
+                    <span class="text-2xl font-medium" style="color: #8B5CF6;">elia</span>
+                </div>
+            </div>
+            
+            <!-- Меню -->
+            <nav class="flex-1 px-4">
+                <ul class="space-y-2">
+                    <li>
+                        <a href="/" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:bg-gray-50">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
+                            </svg>
+                            <span>Мои пациенты</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/organization" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:bg-gray-50">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
+                            </svg>
+                            <span>Организация</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/settings" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:bg-gray-50">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/>
+                            </svg>
+                            <span>Настройки</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/support" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:bg-gray-50">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-2 0c0 .993-.241 1.929-.668 2.754l-1.524-1.525a3.997 3.997 0 00.078-2.183l1.562-1.562C9.927 8.515 10 9.246 10 10zm-5.165 3.913l1.58 1.58A5.98 5.98 0 0110 16a5.976 5.976 0 01-2.516-.552l1.562-1.562a4.006 4.006 0 001.789-.973zm-2.633-2.633a3.996 3.996 0 01-.973-1.789l-1.562 1.562A5.976 5.976 0 004 10c0-.92.236-1.785.668-2.754l1.524 1.525a3.997 3.997 0 00-.078 2.183l-1.562 1.562A5.99 5.99 0 014 10c0-.993.241-1.929.668-2.754l1.524 1.525zm7.758-3.326L13.446 7.5a4 4 0 00-1.789-.973l-1.58-1.58A5.98 5.98 0 0110 4c.92 0 1.785.236 2.754.668l-1.525 1.524a3.997 3.997 0 00-2.183.078L7.5 4.708A5.99 5.99 0 0110 4z"/>
+                            </svg>
+                            <span>Поддержка</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/about" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-elia-purple bg-purple-50">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                            </svg>
+                            <span class="font-medium">О нас</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- Профиль врача -->
+            <div class="p-4 border-t border-gray-200">
+                <div class="flex items-center space-x-3">
+                    <img src="https://ui-avatars.com/api/?name=Тимофей+Арзамасцев&background=8B5CF6&color=fff" 
+                         alt="Врач" 
+                         class="w-10 h-10 rounded-full">
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-gray-900 truncate">Тимофей Арзамасцев</p>
+                        <p class="text-xs text-gray-500 truncate">Глав.Врач</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        
+        <!-- Основная область -->
+        <main class="flex-1 overflow-y-auto">
+            <!-- Контент -->
+            <div class="max-w-6xl mx-auto px-8 py-12">
+                <!-- Заголовок -->
+                <div class="text-center mb-16">
+                    <h1 class="text-5xl font-bold text-gray-900 mb-6">
+                        Мы - <span class="text-elia-purple">команда</span> стартаперов,<br>
+                        которые по-настоящему горят своей идей
+                    </h1>
+                    <p class="text-xl text-gray-600 mb-2">AI-платформа для повышения эффективности терапии</p>
+                    <p class="text-2xl font-semibold text-gray-800">«InnoHub»</p>
+                </div>
+                
+                <!-- О платформе -->
+                <div class="bg-white rounded-2xl shadow-xl p-10 mb-12">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-6 text-center">О платформе Elia</h2>
+                    <div class="grid grid-cols-2 gap-8">
+                        <div class="space-y-6">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <svg width="24" height="24" fill="#8B5CF6" viewBox="0 0 20 20">
+                                        <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/>
+                                        <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-gray-900 mb-2">Автоматизация документации</h3>
+                                    <p class="text-gray-600">AI помогает врачам быстро создавать и обрабатывать медицинскую документацию</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start space-x-4">
+                                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <svg width="24" height="24" fill="#60A5FA" viewBox="0 0 20 20">
+                                        <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-gray-900 mb-2">База знаний</h3>
+                                    <p class="text-gray-600">Структурированное хранение информации о пациентах и истории приёмов</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-6">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-12 h-12 bg-pink-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <svg width="24" height="24" fill="#EC4899" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-gray-900 mb-2">Повышение качества</h3>
+                                    <p class="text-gray-600">Улучшение эффективности терапии через системный подход и аналитику</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start space-x-4">
+                                <div class="w-12 h-12 bg-cyan-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <svg width="24" height="24" fill="#22D3EE" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-gray-900 mb-2">Забота о врачах</h3>
+                                    <p class="text-gray-600">Снижение нагрузки на специалистов и освобождение времени для пациентов</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Призыв к действию -->
+                <div class="relative bg-gradient-to-r from-elia-purple via-elia-blue to-elia-cyan rounded-2xl shadow-2xl p-12 text-white overflow-hidden">
+                    <div class="relative z-10 text-center">
+                        <div class="flex items-center justify-center space-x-3 mb-6">
+                            <svg width="48" height="48" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M16 4L8 8V16C8 21.5 11.5 26.5 16 28C20.5 26.5 24 21.5 24 16V8L16 4Z" fill="white" opacity="0.9"/>
+                            </svg>
+                            <span class="text-4xl font-bold">elia</span>
+                        </div>
+                        <h2 class="text-3xl font-bold mb-4">Забота о тех, кто заботится о нас</h2>
+                        <p class="text-xl mb-8 text-white/90">Присоединяйтесь к нашему сообществу</p>
+                        <a href="https://t.me/elia891" target="_blank" class="inline-flex items-center space-x-3 px-8 py-4 bg-white text-elia-purple rounded-xl font-semibold text-lg hover:bg-gray-100 transition-colors shadow-xl">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/>
+                            </svg>
+                            <span>Telegram канал</span>
+                        </a>
+                    </div>
+                    
+                    <!-- Декоративные элементы -->
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32"></div>
+                    <div class="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full -ml-24 -mb-24"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Toast уведомления -->
+    <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2"></div>
+    
+    <script src="/static/js/main.js"></script>
+</body>
+</html>
+
