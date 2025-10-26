@@ -1,0 +1,103 @@
+╔══════════════════════════════════════════════════════════════╗
+║        ПАРАМЕТРЫ СКРИПТА deploy-ubuntu.sh                    ║
+╚══════════════════════════════════════════════════════════════╝
+
+🎯 ОБЯЗАТЕЛЬНЫЕ ПАРАМЕТРЫ
+────────────────────────────────────────────────────────────────
+-d, --domain DOMAIN        Домен приложения (обязательно)
+-k, --openai-key KEY       OpenAI API ключ (обязательно)
+
+🔧 ОПЦИОНАЛЬНЫЕ ПАРАМЕТРЫ
+────────────────────────────────────────────────────────────────
+-e, --email EMAIL         Email для SSL сертификата
+--no-nginx               Не устанавливать Nginx
+--no-ssl                 Не настраивать SSL
+-h, --help               Показать справку
+
+📝 ПРИМЕРЫ ИСПОЛЬЗОВАНИЯ
+────────────────────────────────────────────────────────────────
+# Полная установка с SSL
+./deploy-ubuntu.sh -d example.com -k sk-proj-abc123... -e admin@example.com
+
+# Установка без SSL (для тестирования)
+./deploy-ubuntu.sh -d localhost -k sk-proj-abc123... --no-ssl
+
+# Установка без Nginx
+./deploy-ubuntu.sh -d example.com -k sk-proj-abc123... -e admin@example.com --no-nginx
+
+# Минимальная установка
+./deploy-ubuntu.sh -d localhost -k sk-proj-abc123... --no-nginx --no-ssl
+
+🔍 КАК ПОЛУЧИТЬ OPENAI API КЛЮЧ
+────────────────────────────────────────────────────────────────
+1. Зайдите на https://platform.openai.com/
+2. Войдите в аккаунт или зарегистрируйтесь
+3. Перейдите в API Keys: https://platform.openai.com/api-keys
+4. Создайте новый ключ (начинается с sk-)
+5. Пополните баланс (минимум $5)
+
+🌐 КАК НАСТРОИТЬ ДОМЕН
+────────────────────────────────────────────────────────────────
+1. Купите домен у регистратора
+2. В DNS настройках добавьте A-запись:
+   Тип: A
+   Имя: @ (или пустое)
+   Значение: IP_ВАШЕГО_СЕРВЕРА
+3. Подождите распространения DNS (5-60 минут)
+4. Проверьте: nslookup ваш-домен.com
+
+⚠️ ВАЖНЫЕ МОМЕНТЫ
+────────────────────────────────────────────────────────────────
+✅ Домен должен указывать на IP сервера
+✅ OpenAI ключ должен быть действительным
+✅ Email нужен для SSL сертификата
+✅ Скрипт запускается НЕ от root
+✅ Нужны sudo права
+
+🚨 ВОЗМОЖНЫЕ ОШИБКИ
+────────────────────────────────────────────────────────────────
+"Домен обязателен" → добавьте -d example.com
+"OpenAI API ключ обязателен" → добавьте -k sk-...
+"Неизвестный параметр" → проверьте синтаксис
+"Домен не резолвится" → проверьте DNS
+"Порт 80 занят" → остановите другие веб-серверы
+
+✅ ПРОВЕРКА ПОСЛЕ УСТАНОВКИ
+────────────────────────────────────────────────────────────────
+sudo systemctl status elia-platform    # Статус приложения
+curl -I https://ваш-домен.com         # Доступность сайта
+curl https://ваш-домен.com/health      # Health check
+sudo systemctl status nginx           # Статус Nginx
+
+📚 ПОЛЕЗНЫЕ КОМАНДЫ
+────────────────────────────────────────────────────────────────
+# Логи
+sudo journalctl -u elia-platform -f    # Логи приложения
+docker compose logs -f                 # Логи Docker
+sudo tail -f /var/log/nginx/elia-error.log  # Логи Nginx
+
+# Управление
+sudo systemctl start elia-platform     # Запуск
+sudo systemctl stop elia-platform     # Остановка
+sudo systemctl restart elia-platform  # Перезапуск
+
+# Откат (если что-то пошло не так)
+sudo systemctl stop elia-platform
+sudo rm /etc/nginx/sites-enabled/elia-platform
+sudo rm /etc/systemd/system/elia-platform.service
+sudo rm -rf /opt/elia-platform
+sudo systemctl daemon-reload
+
+🎯 ИТОГОВАЯ КОМАНДА
+────────────────────────────────────────────────────────────────
+./deploy-ubuntu.sh -d ваш-домен.com -k ваш-openai-ключ -e ваш-email@example.com
+
+Замените:
+- ваш-домен.com → реальный домен
+- ваш-openai-ключ → ключ от OpenAI (sk-...)
+- ваш-email@example.com → ваш email
+
+Пример:
+./deploy-ubuntu.sh -d elia.mycompany.com -k sk-proj-abc123def456ghi789jkl012mno345pqr678stu901vwx234yz567890 -e admin@mycompany.com
+
+═══════════════════════════════════════════════════════════════

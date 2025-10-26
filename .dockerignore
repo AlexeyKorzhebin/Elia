@@ -5,6 +5,8 @@ __pycache__/
 *.so
 .Python
 *.egg-info/
+dist/
+build/
 
 # Virtual Environment
 venv/
@@ -16,15 +18,24 @@ env/
 .vscode/
 .idea/
 *.swp
+*.swo
+*~
 
 # Environment
 .env
 .env.local
+.env.production
+.env.development
 
 # Database
 *.db
 *.sqlite
 *.sqlite3
+data/
+
+# Logs
+logs/
+*.log
 
 # Tests
 .pytest_cache/
@@ -32,22 +43,41 @@ env/
 htmlcov/
 test-results/
 playwright-report/
+tests/
 
 # Git
 .git/
 .gitignore
+.gitattributes
 
 # Documentation
 README.md
 Spec/
+*.md
+docs/
 
 # CI/CD
 .github/
+.gitlab-ci.yml
+.travis.yml
+.circleci/
+
+# Docker
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# Scripts
+scripts/
+*.sh
 
 # Uploads
 static/uploads/*
+!static/uploads/.gitkeep
 
 # Misc
-*.log
 .DS_Store
+Thumbs.db
+*.tmp
+*.temp
 

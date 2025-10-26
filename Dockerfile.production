@@ -1,11 +1,14 @@
-# Multi-stage build для оптимизации образа
+# Multi-stage build для оптимизации образа Elia Platform
 FROM python:3.11-slim as builder
 
 WORKDIR /app
 
-# Установка зависимостей для сборки
+# Установка системных зависимостей для сборки
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
+    g++ \
+    libffi-dev \
+    libssl-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Копируем requirements и устанавливаем зависимости
@@ -15,7 +18,18 @@ RUN pip install --no-cache-dir --user -r requirements.txt
 # Финальный образ
 FROM python:3.11-slim
 
+# Метаданные образа
+LABEL maintainer="Alexey Korzhebin <admin@elia.su>"
+LABEL description="Elia AI Platform - медицинская платформа с ИИ"
+LABEL version="1.0.0"
+LABEL repository="https://github.com/AlexeyKorzhebin/Elia"
+
 WORKDIR /app
+
+# Установка системных зависимостей для runtime
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
 
 # Копируем установленные пакеты из builder
 COPY --from=builder /root/.local /root/.local
@@ -31,13 +45,22 @@ COPY templates ./templates
 # Создаём необходимые директории
 RUN mkdir -p static/uploads data logs
 
+# Создаём пользователя для безопасности
+RUN groupadd -r elia && useradd -r -g elia elia
+RUN chown -R elia:elia /app
+USER elia
+
+# Переменные окружения
+ENV PYTHONPATH=/app
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+
 # Открываем порт
 EXPOSE 8000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')" || exit 1
+    CMD curl -f http://localhost:8000/health || exit 1
 
 # Запуск приложения
 CMD ["python", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
-

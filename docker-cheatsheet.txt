@@ -1,0 +1,129 @@
+╔══════════════════════════════════════════════════════════════╗
+║        DOCKER ШПАРГАЛКА ДЛЯ ELIA PLATFORM                   ║
+╚══════════════════════════════════════════════════════════════╝
+
+🚀 ПЕРВЫЙ ЗАПУСК
+────────────────────────────────────────────────────────────────
+./setup-docker.sh          # Автоматическая настройка
+docker-compose build       # Собрать образ
+docker-compose up -d       # Запустить в фоне
+
+📝 СОЗДАТЬ .ENV ВРУЧНУЮ
+────────────────────────────────────────────────────────────────
+Создайте файл .env в корне с содержимым:
+
+DATABASE_URL=sqlite+aiosqlite:///./data/elia.db
+HOST=0.0.0.0
+PORT=8000
+DEBUG=false
+OPENAI_API_KEY=ваш-ключ
+OPENAI_MODEL=gpt-4
+
+🔧 ОСНОВНЫЕ КОМАНДЫ
+────────────────────────────────────────────────────────────────
+docker-compose up -d       # Запустить
+docker-compose down        # Остановить
+docker-compose restart     # Перезапустить (применить .env)
+docker-compose ps          # Статус
+docker-compose logs -f     # Логи в реальном времени
+
+🗄️ РАБОТА С БАЗОЙ ДАННЫХ
+────────────────────────────────────────────────────────────────
+# БД хранится в ./data/elia.db на вашем компьютере
+
+# Использовать текущую БД:
+mkdir -p data && mv elia.db data/
+
+# Бэкап:
+cp data/elia.db data/backup_$(date +%Y%m%d).db
+
+# Восстановление:
+docker-compose down
+cp data/backup_YYYYMMDD.db data/elia.db
+docker-compose up -d
+
+# Миграции:
+docker exec -it elia-platform bash
+alembic upgrade head
+
+⚙️ ИЗМЕНЕНИЕ ПАРАМЕТРОВ ЧЕРЕЗ .ENV
+────────────────────────────────────────────────────────────────
+# 1. Отредактируйте .env файл
+# 2. Перезапустите:
+
+docker-compose restart     # Быстрый способ
+# ИЛИ
+docker-compose down && docker-compose up -d  # Безопасный способ
+
+# Данные НЕ пострадают!
+
+📊 ПЕРСИСТЕНТНЫЕ ДАННЫЕ (вне Docker)
+────────────────────────────────────────────────────────────────
+./data/           → База данных
+./static/uploads/ → Загруженные файлы
+./logs/           → Логи приложения
+./.env            → Конфигурация
+
+Все эти данные сохраняются при:
+✅ docker-compose down
+✅ docker-compose build
+✅ Пересоздании контейнера
+
+🔄 ОБНОВЛЕНИЕ КОДА
+────────────────────────────────────────────────────────────────
+git pull
+docker-compose build
+docker-compose down
+docker-compose up -d
+# Данные останутся!
+
+🐛 ОТЛАДКА
+────────────────────────────────────────────────────────────────
+docker-compose logs        # Все логи
+docker-compose logs -f     # Следить за логами
+docker exec -it elia-platform bash  # Войти в контейнер
+curl http://localhost:8000/health   # Проверить работу
+
+✅ ПРОВЕРКА РАБОТЫ
+────────────────────────────────────────────────────────────────
+curl http://localhost:8000/health
+# Ожидается: {"status":"healthy"}
+
+open http://localhost:8000
+# Должен открыться интерфейс
+
+🎯 ЧАСТЫЕ СЦЕНАРИИ
+────────────────────────────────────────────────────────────────
+Сменить порт:
+  echo "PORT=9000" > .env
+  docker-compose down && docker-compose up -d
+
+Включить debug:
+  echo "DEBUG=true" >> .env
+  docker-compose restart
+
+Изменить OpenAI ключ:
+  nano .env  # Отредактируйте OPENAI_API_KEY
+  docker-compose restart
+
+Полная пересборка:
+  docker-compose down
+  docker-compose build --no-cache
+  docker-compose up -d
+
+📚 ДОКУМЕНТАЦИЯ
+────────────────────────────────────────────────────────────────
+DOCKER_README.md       → Итоговая инструкция
+DOCKER_QUICKSTART.md   → Быстрый старт
+DOCKER_GUIDE.md        → Полное руководство
+setup-docker.sh        → Скрипт настройки
+
+⚠️ ВАЖНО
+────────────────────────────────────────────────────────────────
+✅ Файл .env обязателен
+✅ БД хранится в ./data/ - не удаляйте!
+✅ docker-compose down безопасен (данные сохраняются)
+⚠️ docker-compose down -v УДАЛИТ ВСЕ ДАННЫЕ!
+
+═══════════════════════════════════════════════════════════════
+
