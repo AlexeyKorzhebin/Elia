@@ -21,3 +21,6 @@ playwright==1.48.0
 # Утилиты
 python-dotenv==1.0.1
 
+# Генерация PDF
+reportlab==4.2.5
+
