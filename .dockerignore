@@ -1,0 +1,53 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+
+# Virtual Environment
+venv/
+ENV/
+env/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Environment
+.env
+.env.local
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Tests
+.pytest_cache/
+.coverage
+htmlcov/
+test-results/
+playwright-report/
+
+# Git
+.git/
+.gitignore
+
+# Documentation
+README.md
+Spec/
+
+# CI/CD
+.github/
+
+# Uploads
+static/uploads/*
+
+# Misc
+*.log
+.DS_Store
+
