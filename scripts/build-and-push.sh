@@ -29,7 +29,7 @@ info() {
 }
 
 # Переменные
-DOCKER_USERNAME="alexeykorzhebin"
+DOCKER_USERNAME="alekseykorzhebin"
 IMAGE_NAME="elia-platform"
 VERSION="1.0.0"
 FULL_IMAGE_NAME="${DOCKER_USERNAME}/${IMAGE_NAME}"
@@ -40,7 +40,7 @@ show_help() {
     echo "Использование: $0 [опции]"
     echo ""
     echo "Опции:"
-    echo "  -u, --username USERNAME   Docker Hub username (по умолчанию: alexeykorzhebin)"
+    echo "  -u, --username USERNAME   Docker Hub username (по умолчанию: alekseykorzhebin)"
     echo "  -n, --name NAME          Имя образа (по умолчанию: elia-platform)"
     echo "  -v, --version VERSION   Версия образа (по умолчанию: 1.0.0)"
     echo "  -t, --tag TAG            Дополнительный тег"

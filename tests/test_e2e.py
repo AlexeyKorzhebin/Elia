@@ -128,7 +128,7 @@ class TestPatientCardScreen:
         
         # Проверяем, что открыта вкладка "Цифровой портрет"
         digital_portrait_tab = page.locator('[data-tab="digital-portrait"]')
-        await expect(digital_portrait_tab).to_have_class(/tab-active/)
+        await expect(digital_portrait_tab).to_have_class("tab-active")
         
         # Проверяем наличие секций
         await expect(page.locator("text=Основные данные")).to_be_visible()
@@ -146,13 +146,13 @@ class TestPatientCardScreen:
         # Переключаемся на вкладку "Анамнез"
         anamnesis_tab = page.locator('[data-tab="anamnesis"]')
         await anamnesis_tab.click()
-        await expect(anamnesis_tab).to_have_class(/tab-active/)
+        await expect(anamnesis_tab).to_have_class("tab-active")
         await expect(page.locator("text=Цель обращения")).to_be_visible()
         
         # Переключаемся на вкладку "Стенограмма"
         stenogram_tab = page.locator('[data-tab="stenogram"]')
         await stenogram_tab.click()
-        await expect(stenogram_tab).to_have_class(/tab-active/)
+        await expect(stenogram_tab).to_have_class("tab-active")
         await expect(page.locator("#audio-upload-section")).to_be_visible()
     
     async def test_fill_anamnesis_form(self, page: Page):
@@ -241,6 +241,105 @@ class TestAudioUpload:
         # Этот тест требует создания реального аудиофайла
         # Для MVP можно пропустить или реализовать через mock
         pytest.skip("Требуется реальный аудиофайл для загрузки")
+
+
+@pytest.mark.e2e
+@pytest.mark.slow
+class TestTranscriptionWorkflow:
+    """Тесты workflow генерации и редактирования транскрипции"""
+    
+    async def test_transcription_persistence_on_tab_switch(self, page: Page):
+        """
+        BUGFIX TEST: Проверка, что транскрипция не исчезает при переключении вкладок
+        
+        Сценарий:
+        1. Сгенерировать разговор
+        2. Сохранить изменения
+        3. Извлечь анамнез
+        4. Переключиться на вкладку "Анамнез"
+        5. Вернуться на вкладку "Стенограмма"
+        6. Проверить, что транскрипция все еще отображается
+        """
+        # Шаг 1: Открываем карточку пациента
+        await page.goto("http://127.0.0.1:8000/")
+        await page.wait_for_selector(".appointment-card", timeout=5000)
+        await page.locator(".appointment-card").first.click()
+        await page.wait_for_selector("#patient-card-screen", timeout=5000)
+        
+        # Шаг 2: Переходим на вкладку "Стенограмма"
+        stenogram_tab = page.locator('[data-tab="stenogram"]')
+        await stenogram_tab.click()
+        await expect(stenogram_tab).to_have_class("tab-active")
+        await page.wait_for_selector("#audio-upload-section", timeout=2000)
+        
+        # Шаг 3: Проверяем наличие кнопки генерации
+        generate_btn = page.locator("#generate-conversation-btn")
+        await expect(generate_btn).to_be_visible()
+        
+        # Шаг 4: Нажимаем "Сгенерировать разговор (AI)"
+        await generate_btn.click()
+        
+        # Шаг 5: Ждём генерации (может занять до 20 секунд)
+        await page.wait_for_selector("#transcription-text-area", timeout=25000)
+        
+        # Шаг 6: Проверяем, что транскрипция загружена
+        transcription_area = page.locator("#transcription-text-area")
+        await expect(transcription_area).to_be_visible()
+        
+        # Получаем текст транскрипции
+        original_text = await transcription_area.input_value()
+        assert len(original_text) > 100, "Транскрипция должна содержать текст"
+        
+        # Шаг 7: Вносим изменения в текст
+        test_marker = "\n\n[ТЕСТОВОЕ ИЗМЕНЕНИЕ]"
+        modified_text = original_text + test_marker
+        await transcription_area.fill(modified_text)
+        
+        # Шаг 8: Сохраняем изменения
+        save_btn = page.locator("#save-transcription-btn")
+        await save_btn.click()
+        
+        # Ждём уведомления об успешном сохранении
+        await page.wait_for_selector(".toast-success", timeout=5000)
+        
+        # Шаг 9: Извлекаем анамнез
+        extract_btn = page.locator("#extract-anamnesis-btn")
+        await extract_btn.click()
+        
+        # Ждём завершения извлечения (может занять до 10 секунд)
+        await page.wait_for_selector(".toast-success", timeout=15000)
+        
+        # Шаг 10: Переключаемся на вкладку "Анамнез"
+        anamnesis_tab = page.locator('[data-tab="anamnesis"]')
+        await anamnesis_tab.click()
+        await expect(anamnesis_tab).to_have_class("tab-active")
+        
+        # Проверяем, что анамнез заполнен
+        await page.wait_for_selector("#purpose-field", timeout=2000)
+        purpose_value = await page.locator("#purpose-field").input_value()
+        assert len(purpose_value) > 0, "Цель обращения должна быть заполнена"
+        
+        # Шаг 11: КРИТИЧЕСКИЙ ШАГ - Возвращаемся на вкладку "Стенограмма"
+        await stenogram_tab.click()
+        await expect(stenogram_tab).to_have_class("tab-active")
+        
+        # Шаг 12: Проверяем, что транскрипция все еще там
+        await page.wait_for_selector("#transcription-text-area", timeout=3000)
+        transcription_area_after = page.locator("#transcription-text-area")
+        await expect(transcription_area_after).to_be_visible()
+        
+        # Шаг 13: Проверяем, что текст сохранился (включая наши изменения)
+        text_after_switch = await transcription_area_after.input_value()
+        assert len(text_after_switch) > 100, "Транскрипция должна содержать текст после переключения"
+        assert test_marker in text_after_switch, "Изменения должны сохраниться"
+        
+        # Шаг 14: Проверяем, что кнопки доступны
+        save_btn_after = page.locator("#save-transcription-btn")
+        extract_btn_after = page.locator("#extract-anamnesis-btn")
+        await expect(save_btn_after).to_be_visible()
+        await expect(extract_btn_after).to_be_visible()
+        
+        print("✅ ТЕСТ ПРОЙДЕН: Транскрипция сохраняется при переключении вкладок!")
 
 
 @pytest.mark.e2e

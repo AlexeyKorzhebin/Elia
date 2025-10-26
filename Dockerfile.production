@@ -26,28 +26,34 @@ LABEL repository="https://github.com/AlexeyKorzhebin/Elia"
 
 WORKDIR /app
 
-# Установка системных зависимостей для runtime
+# Установка системных зависимостей для runtime и шрифтов для PDF
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
+    fonts-dejavu \
+    fonts-dejavu-core \
+    fontconfig \
+    && fc-cache -f -v \
     && rm -rf /var/lib/apt/lists/*
 
 # Копируем установленные пакеты из builder
 COPY --from=builder /root/.local /root/.local
 
-# Обновляем PATH
-ENV PATH=/root/.local/bin:$PATH
+# Обновляем PATH для пользователя elia
+ENV PATH=/home/elia/.local/bin:$PATH
 
 # Копируем код приложения
 COPY app ./app
 COPY static ./static
 COPY templates ./templates
+COPY requirements.txt .
 
 # Создаём необходимые директории
 RUN mkdir -p static/uploads data logs
 
 # Создаём пользователя для безопасности
-RUN groupadd -r elia && useradd -r -g elia elia
-RUN chown -R elia:elia /app
+RUN groupadd -r elia && useradd -r -g elia -m elia
+RUN mv /root/.local /home/elia/.local
+RUN chown -R elia:elia /app /home/elia/.local
 USER elia
 
 # Переменные окружения
@@ -56,11 +62,11 @@ ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 
 # Открываем порт
-EXPOSE 8000
+EXPOSE 80
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:8000/health || exit 1
+    CMD curl -f http://localhost:80/health || exit 1
 
 # Запуск приложения
-CMD ["python", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["python", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80"]

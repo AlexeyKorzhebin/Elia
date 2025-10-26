@@ -68,3 +68,15 @@ Thumbs.db
 # Alembic
 alembic/versions/*.pyc
 
+# Temporary files
+auto-deploy.sh
+deploy-to-server.sh
+test_workflow.py
+
+# Archives
+*.tar.gz
+*.zip
+
+# Data
+data/*.pdf
+

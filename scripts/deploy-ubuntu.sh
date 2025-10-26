@@ -191,7 +191,7 @@ services:
       dockerfile: Dockerfile
     container_name: elia-platform
     ports:
-      - "${PORT:-8000}:8000"
+      - "${PORT:-80}:80"
     env_file:
       - .env
     volumes:
@@ -409,9 +409,34 @@ else
     log "Файлы приложения уже существуют, пропускаем создание заглушек"
 fi
 
-# Сборка Docker образа
-log "Сборка Docker образа..."
-docker compose build
+# Использование образа из Docker Hub
+log "Использование образа из Docker Hub..."
+log "Образ: alexeykorzhebin/elia-platform:latest"
+
+# Обновляем docker-compose.yml для использования образа из Docker Hub
+log "Обновление docker-compose.yml для использования образа из Docker Hub..."
+cat > docker-compose.yml << 'EOF'
+services:
+  elia-app:
+    image: alexeykorzhebin/elia-platform:latest
+    container_name: elia-platform
+    ports:
+      - "${PORT:-80}:80"
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+      - ./static/uploads:/app/static/uploads
+      - ./logs:/app/logs
+      - ./.env:/app/.env:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+EOF
 
 # Установка Nginx
 if [[ "$INSTALL_NGINX" == true ]]; then
@@ -434,7 +459,7 @@ server {
 
     # Проксирование на Docker контейнер
     location / {
-        proxy_pass http://127.0.0.1:8000;
+        proxy_pass http://127.0.0.1:80;
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
@@ -514,7 +539,10 @@ EOF
 sudo systemctl daemon-reload
 sudo systemctl enable elia-platform
 
-# Запуск приложения
+# Загрузка и запуск приложения
+log "Загрузка образа из Docker Hub..."
+docker pull alexeykorzhebin/elia-platform:latest
+
 log "Запуск приложения..."
 sudo systemctl start elia-platform
 
@@ -599,7 +627,7 @@ else
 fi
 
 # Проверка доступности
-if curl -s -o /dev/null -w "%{http_code}" http://localhost:8000/health | grep -q "200"; then
+if curl -s -o /dev/null -w "%{http_code}" http://localhost:80/health | grep -q "200"; then
     log "✅ Приложение отвечает на health check"
 else
     warn "❌ Приложение не отвечает на health check"

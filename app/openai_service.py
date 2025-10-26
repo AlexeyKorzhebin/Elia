@@ -75,13 +75,9 @@ class OpenAIService:
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_prompt}
                 ],
-                "max_completion_tokens": 2000
+                "max_tokens": 2000,
+                "temperature": 0.8
             }
-            
-            # Добавляем temperature только если модель поддерживает
-            # gpt-5-mini не поддерживает кастомные значения temperature
-            if "gpt-5" not in settings.openai_model.lower():
-                request_params["temperature"] = 0.8
             
             response = await self.client.chat.completions.create(**request_params)
             
@@ -141,14 +137,10 @@ class OpenAIService:
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_prompt}
                 ],
-                "max_completion_tokens": 1500,
+                "max_tokens": 1500,
+                "temperature": 0.3,
                 "response_format": {"type": "json_object"}
             }
-            
-            # Добавляем temperature только если модель поддерживает
-            # gpt-5-mini не поддерживает кастомные значения temperature
-            if "gpt-5" not in settings.openai_model.lower():
-                request_params["temperature"] = 0.3
             
             response = await self.client.chat.completions.create(**request_params)
             

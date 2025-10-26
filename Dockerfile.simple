@@ -1,0 +1,51 @@
+# Простой Dockerfile для Elia Platform
+FROM python:3.11-slim
+
+# Метаданные образа
+LABEL maintainer="Alexey Korzhebin <admin@elia.su>"
+LABEL description="Elia AI Platform - медицинская платформа с ИИ"
+LABEL version="1.0.0"
+LABEL repository="https://github.com/AlexeyKorzhebin/Elia"
+
+WORKDIR /app
+
+# Установка системных зависимостей
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    gcc \
+    g++ \
+    libffi-dev \
+    libssl-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Копируем requirements и устанавливаем зависимости
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Копируем код приложения
+COPY app ./app
+COPY static ./static
+COPY templates ./templates
+
+# Создаём необходимые директории
+RUN mkdir -p static/uploads data logs
+
+# Создаём пользователя для безопасности
+RUN groupadd -r elia && useradd -r -g elia elia
+RUN chown -R elia:elia /app
+
+# Переменные окружения
+ENV PYTHONPATH=/app
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+
+# Открываем порт
+EXPOSE 80
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:80/health || exit 1
+
+# Запуск приложения
+USER elia
+CMD ["python", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80"]
