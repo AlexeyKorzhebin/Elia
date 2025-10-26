@@ -32,17 +32,88 @@
     </script>
 </head>
 <body class="bg-gray-50 font-sans">
-    <div class="flex h-screen overflow-hidden">
-        <!-- Боковая панель -->
-        <aside class="w-64 bg-white border-r border-gray-200 flex flex-col">
-            <!-- Логотип -->
-            <div class="p-6">
-                <div class="flex items-center">
-                    <img src="/static/images/logo.svg" alt="Elia" width="120" height="40">
+    <!-- Mobile Header -->
+    <div class="mobile-header lg:hidden">
+        <button id="mobile-menu-button" class="mobile-menu-button">
+            <div class="burger-icon">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </button>
+        <img src="/static/images/logo.svg" alt="Elia" height="32">
+        <div style="width: 44px;"></div>
+    </div>
+    
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu-overlay" class="hidden"></div>
+    
+    <!-- Mobile Sidebar -->
+    <aside id="mobile-sidebar" class="flex flex-col">
+        <div class="p-6 border-b border-gray-200">
+            <img src="/static/images/logo.svg" alt="Elia" width="120" height="40">
+        </div>
+        <nav class="flex-1 px-4 py-4">
+            <ul class="space-y-1">
+                <li>
+                    <a href="/" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
+                        </svg>
+                        <span>Мои пациенты</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/organization" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
+                        </svg>
+                        <span>Организация</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/settings" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-elia-dark bg-elia-lavender font-medium">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/>
+                        </svg>
+                        <span>Настройки</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/support" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-2 0c0 .993-.241 1.929-.668 2.754l-1.524-1.525a3.997 3.997 0 00.078-2.183l1.562-1.562C9.927 8.515 10 9.246 10 10zm-5.165 3.913l1.58 1.58A5.98 5.98 0 0110 16a5.976 5.976 0 01-2.516-.552l1.562-1.562a4.006 4.006 0 001.789-.973zm-2.633-2.633a3.996 3.996 0 01-.973-1.789l-1.562 1.562A5.976 5.976 0 004 10c0-.92.236-1.785.668-2.754l1.524 1.525a3.997 3.997 0 00-.078 2.183l-1.562 1.562A5.99 5.99 0 014 10c0-.993.241-1.929.668-2.754l1.524 1.525zm7.758-3.326L13.446 7.5a4 4 0 00-1.789-.973l-1.58-1.58A5.98 5.98 0 0110 4c.92 0 1.785.236 2.754.668l-1.525 1.524a3.997 3.997 0 00-2.183.078L7.5 4.708A5.99 5.99 0 0110 4z"/>
+                        </svg>
+                        <span>Поддержка</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/about" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                        </svg>
+                        <span>О нас</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <div class="p-4 border-t border-gray-200">
+            <div class="flex items-center space-x-3">
+                <img src="https://ui-avatars.com/api/?name=Тимофей+Арзамасцев&background=D0BAFF&color=1A1A1A" alt="Врач" class="w-10 h-10 rounded-full">
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-gray-900 truncate">Тимофей Арзамасцев</p>
+                    <p class="text-xs text-gray-500 truncate">Глав.Врач</p>
                 </div>
             </div>
-            
-            <!-- Меню -->
+        </div>
+    </aside>
+    
+    <div class="flex h-screen overflow-hidden">
+        <!-- Desktop Sidebar -->
+        <aside class="hidden lg:flex lg:w-64 bg-white border-r border-gray-200 flex-col">
+            <div class="p-6">
+                <img src="/static/images/logo.svg" alt="Elia" width="120" height="40">
+            </div>
             <nav class="flex-1 px-4">
                 <ul class="space-y-2">
                     <li>
@@ -66,7 +137,7 @@
                             <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/>
                             </svg>
-                            <span class="font-medium">Настройки</span>
+                            <span>Настройки</span>
                         </a>
                     </li>
                     <li>
@@ -87,13 +158,9 @@
                     </li>
                 </ul>
             </nav>
-            
-            <!-- Профиль врача -->
             <div class="p-4 border-t border-gray-200">
                 <div class="flex items-center space-x-3">
-                    <img src="https://ui-avatars.com/api/?name=Тимофей+Арзамасцев&background=D0BAFF&color=1A1A1A" 
-                         alt="Врач" 
-                         class="w-10 h-10 rounded-full">
+                    <img src="https://ui-avatars.com/api/?name=Тимофей+Арзамасцев&background=D0BAFF&color=1A1A1A" alt="Врач" class="w-10 h-10 rounded-full">
                     <div class="flex-1 min-w-0">
                         <p class="text-sm font-medium text-gray-900 truncate">Тимофей Арзамасцев</p>
                         <p class="text-xs text-gray-500 truncate">Глав.Врач</p>
@@ -102,123 +169,107 @@
             </div>
         </aside>
         
-        <!-- Основная область -->
-        <main class="flex-1 overflow-y-auto">
-            <!-- Заголовок -->
-            <header class="bg-white border-b border-gray-200 px-8 py-6">
-                <h1 class="text-3xl font-semibold text-gray-900">Настройки</h1>
+        <!-- Main -->
+        <main class="flex-1 overflow-y-auto lg:mt-0" style="margin-top: 57px;">
+            <header class="bg-white border-b border-gray-200 px-4 py-4 lg:px-8 lg:py-6">
+                <h1 class="text-2xl lg:text-3xl font-semibold text-gray-900">Настройки</h1>
             </header>
             
-            <!-- Контент -->
-            <div class="px-8 py-6 max-w-5xl">
+            <div class="px-4 py-4 lg:px-8 lg:py-6 max-w-5xl">
                 <!-- Профиль -->
-                <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
-                    <h2 class="text-xl font-semibold text-gray-900 mb-4">Профиль</h2>
-                    <div class="flex items-start space-x-6 mb-6">
-                        <div class="flex-shrink-0">
+                <div class="bg-white rounded-lg shadow-sm p-4 lg:p-6 mb-6">
+                    <h2 class="text-lg lg:text-xl font-semibold text-gray-900 mb-4">Профиль</h2>
+                    <div class="flex flex-col lg:flex-row lg:items-start lg:space-x-6 mb-6">
+                        <div class="flex-shrink-0 mb-4 lg:mb-0 text-center lg:text-left">
                             <img src="https://ui-avatars.com/api/?name=Тимофей+Арзамасцев&background=D0BAFF&color=1A1A1A&size=96" 
                                  alt="Фото профиля" 
-                                 class="w-24 h-24 rounded-full">
+                                 class="w-24 h-24 rounded-full mx-auto lg:mx-0">
                             <button class="mt-2 text-sm text-elia-lavender hover:underline">Изменить фото</button>
                         </div>
                         <div class="flex-1 space-y-4">
-                            <div class="grid grid-cols-2 gap-4">
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Имя</label>
-                                    <input type="text" 
-                                           value="Тимофей" 
-                                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-elia-lavender">
+                                    <input type="text" value="Тимофей" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-elia-lavender">
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Фамилия</label>
-                                    <input type="text" 
-                                           value="Арзамасцев" 
-                                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-elia-lavender">
+                                    <input type="text" value="Арзамасцев" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-elia-lavender">
                                 </div>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Должность</label>
-                                <input type="text" 
-                                       value="Главный врач" 
-                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-elia-lavender">
+                                <input type="text" value="Главный врач" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-elia-lavender">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                                <input type="email" 
-                                       value="t.arzamastsev@clinic.ru" 
-                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-elia-lavender">
+                                <input type="email" value="t.arzamastsev@clinic.ru" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-elia-lavender">
                             </div>
                         </div>
                     </div>
                     <div class="flex justify-end">
-                        <button class="px-6 py-2 text-elia-dark bg-elia-lavender rounded-xl hover:bg-opacity-90 font-medium transition-all hover:shadow-lg">
+                        <button class="w-full lg:w-auto px-6 py-2 text-elia-dark bg-elia-lavender rounded-xl hover:bg-opacity-90 font-medium transition-all hover:shadow-lg">
                             Сохранить изменения
                         </button>
                     </div>
                 </div>
                 
                 <!-- Безопасность -->
-                <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
-                    <h2 class="text-xl font-semibold text-gray-900 mb-4">Безопасность</h2>
+                <div class="bg-white rounded-lg shadow-sm p-4 lg:p-6 mb-6">
+                    <h2 class="text-lg lg:text-xl font-semibold text-gray-900 mb-4">Безопасность</h2>
                     <div class="space-y-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Текущий пароль</label>
-                            <input type="password" 
-                                   placeholder="••••••••" 
-                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-elia-lavender">
+                            <input type="password" placeholder="••••••••" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-elia-lavender">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Новый пароль</label>
-                            <input type="password" 
-                                   placeholder="••••••••" 
-                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-elia-lavender">
+                            <input type="password" placeholder="••••••••" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-elia-lavender">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Подтвердите новый пароль</label>
-                            <input type="password" 
-                                   placeholder="••••••••" 
-                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-elia-lavender">
+                            <input type="password" placeholder="••••••••" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-elia-lavender">
                         </div>
                     </div>
                     <div class="flex justify-end mt-4">
-                        <button class="px-6 py-2 text-elia-dark bg-elia-lavender rounded-xl hover:bg-opacity-90 font-medium transition-all hover:shadow-lg">
+                        <button class="w-full lg:w-auto px-6 py-2 text-elia-dark bg-elia-lavender rounded-xl hover:bg-opacity-90 font-medium transition-all hover:shadow-lg">
                             Изменить пароль
                         </button>
                     </div>
                 </div>
                 
                 <!-- Уведомления -->
-                <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
-                    <h2 class="text-xl font-semibold text-gray-900 mb-4">Уведомления</h2>
+                <div class="bg-white rounded-lg shadow-sm p-4 lg:p-6 mb-6">
+                    <h2 class="text-lg lg:text-xl font-semibold text-gray-900 mb-4">Уведомления</h2>
                     <div class="space-y-4">
                         <div class="flex items-center justify-between">
-                            <div>
-                                <p class="font-medium text-gray-900">Email уведомления</p>
-                                <p class="text-sm text-gray-500">Получать уведомления о новых пациентах и приёмах</p>
+                            <div class="flex-1 pr-4">
+                                <p class="font-medium text-gray-900 text-sm lg:text-base">Email уведомления</p>
+                                <p class="text-xs lg:text-sm text-gray-500">Получать уведомления о новых пациентах и приёмах</p>
                             </div>
-                            <label class="relative inline-flex items-center cursor-pointer">
+                            <label class="relative inline-flex items-center cursor-pointer flex-shrink-0">
                                 <input type="checkbox" checked class="sr-only peer">
                                 <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-elia-lavender"></div>
                             </label>
                         </div>
                         
                         <div class="flex items-center justify-between">
-                            <div>
-                                <p class="font-medium text-gray-900">Push уведомления</p>
-                                <p class="text-sm text-gray-500">Получать push уведомления в браузере</p>
+                            <div class="flex-1 pr-4">
+                                <p class="font-medium text-gray-900 text-sm lg:text-base">Push уведомления</p>
+                                <p class="text-xs lg:text-sm text-gray-500">Получать push уведомления в браузере</p>
                             </div>
-                            <label class="relative inline-flex items-center cursor-pointer">
+                            <label class="relative inline-flex items-center cursor-pointer flex-shrink-0">
                                 <input type="checkbox" class="sr-only peer">
                                 <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-elia-lavender"></div>
                             </label>
                         </div>
                         
                         <div class="flex items-center justify-between">
-                            <div>
-                                <p class="font-medium text-gray-900">SMS уведомления</p>
-                                <p class="text-sm text-gray-500">Получать SMS о важных событиях</p>
+                            <div class="flex-1 pr-4">
+                                <p class="font-medium text-gray-900 text-sm lg:text-base">SMS уведомления</p>
+                                <p class="text-xs lg:text-sm text-gray-500">Получать SMS о важных событиях</p>
                             </div>
-                            <label class="relative inline-flex items-center cursor-pointer">
+                            <label class="relative inline-flex items-center cursor-pointer flex-shrink-0">
                                 <input type="checkbox" checked class="sr-only peer">
                                 <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-elia-lavender"></div>
                             </label>
@@ -227,35 +278,35 @@
                 </div>
                 
                 <!-- Интеграции -->
-                <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
-                    <h2 class="text-xl font-semibold text-gray-900 mb-4">Интеграции</h2>
+                <div class="bg-white rounded-lg shadow-sm p-4 lg:p-6 mb-6">
+                    <h2 class="text-lg lg:text-xl font-semibold text-gray-900 mb-4">Интеграции</h2>
                     <div class="space-y-3">
-                        <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
-                            <div class="flex items-center space-x-3">
-                                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center text-white font-bold">
+                        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between p-4 border border-gray-200 rounded-lg">
+                            <div class="flex items-center space-x-3 mb-3 lg:mb-0">
+                                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center text-white font-bold flex-shrink-0">
                                     МИС
                                 </div>
-                                <div>
-                                    <p class="font-medium text-gray-900">Медицинская информационная система</p>
-                                    <p class="text-sm text-gray-500">Синхронизация данных пациентов</p>
+                                <div class="min-w-0">
+                                    <p class="font-medium text-gray-900 text-sm lg:text-base">Медицинская информационная система</p>
+                                    <p class="text-xs lg:text-sm text-gray-500">Синхронизация данных пациентов</p>
                                 </div>
                             </div>
-                            <button class="px-4 py-2 text-sm text-elia-dark border border-elia-lavender rounded-lg hover:bg-elia-lavender hover:bg-opacity-20">
+                            <button class="w-full lg:w-auto px-4 py-2 text-sm text-elia-dark border border-elia-lavender rounded-lg hover:bg-elia-lavender hover:bg-opacity-20">
                                 Настроить
                             </button>
                         </div>
                         
-                        <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
-                            <div class="flex items-center space-x-3">
-                                <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center text-white font-bold">
+                        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between p-4 border border-gray-200 rounded-lg">
+                            <div class="flex items-center space-x-3 mb-3 lg:mb-0">
+                                <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center text-white font-bold flex-shrink-0">
                                     ЛИС
                                 </div>
-                                <div>
-                                    <p class="font-medium text-gray-900">Лабораторная информационная система</p>
-                                    <p class="text-sm text-gray-500">Получение результатов анализов</p>
+                                <div class="min-w-0">
+                                    <p class="font-medium text-gray-900 text-sm lg:text-base">Лабораторная информационная система</p>
+                                    <p class="text-xs lg:text-sm text-gray-500">Получение результатов анализов</p>
                                 </div>
                             </div>
-                            <button class="px-4 py-2 text-sm text-elia-dark border border-elia-lavender rounded-lg hover:bg-elia-lavender hover:bg-opacity-20">
+                            <button class="w-full lg:w-auto px-4 py-2 text-sm text-elia-dark border border-elia-lavender rounded-lg hover:bg-elia-lavender hover:bg-opacity-20">
                                 Настроить
                             </button>
                         </div>
@@ -263,25 +314,25 @@
                 </div>
                 
                 <!-- Опасная зона -->
-                <div class="bg-white rounded-lg shadow-sm p-6 border-2 border-red-200">
-                    <h2 class="text-xl font-semibold text-red-600 mb-4">Опасная зона</h2>
+                <div class="bg-white rounded-lg shadow-sm p-4 lg:p-6 border-2 border-red-200">
+                    <h2 class="text-lg lg:text-xl font-semibold text-red-600 mb-4">Опасная зона</h2>
                     <div class="space-y-4">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="font-medium text-gray-900">Экспорт данных</p>
-                                <p class="text-sm text-gray-500">Скачать все ваши данные в формате JSON</p>
+                        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+                            <div class="mb-3 lg:mb-0">
+                                <p class="font-medium text-gray-900 text-sm lg:text-base">Экспорт данных</p>
+                                <p class="text-xs lg:text-sm text-gray-500">Скачать все ваши данные в формате JSON</p>
                             </div>
-                            <button class="px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">
+                            <button class="w-full lg:w-auto px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">
                                 Экспортировать
                             </button>
                         </div>
                         
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="font-medium text-red-600">Удалить аккаунт</p>
-                                <p class="text-sm text-gray-500">Безвозвратное удаление всех данных</p>
+                        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+                            <div class="mb-3 lg:mb-0">
+                                <p class="font-medium text-red-600 text-sm lg:text-base">Удалить аккаунт</p>
+                                <p class="text-xs lg:text-sm text-gray-500">Безвозвратное удаление всех данных</p>
                             </div>
-                            <button class="px-4 py-2 text-sm text-white bg-red-600 rounded-lg hover:bg-red-700">
+                            <button class="w-full lg:w-auto px-4 py-2 text-sm text-white bg-red-600 rounded-lg hover:bg-red-700">
                                 Удалить
                             </button>
                         </div>
@@ -291,10 +342,9 @@
         </main>
     </div>
     
-    <!-- Toast уведомления -->
     <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2"></div>
     
+    <script src="/static/js/mobile-menu.js"></script>
     <script src="/static/js/main.js"></script>
 </body>
 </html>
-

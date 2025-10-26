@@ -15,11 +15,14 @@ const App = {
         console.log('Инициализация Elia AI Platform...');
         
         // Инициализация компонентов
+        if (typeof MobileMenu !== 'undefined') {
+            MobileMenu.init();
+        }
         Patients.init();
         PatientCard.init();
         
         // Обработчики меню
-        $('#menu-patients').on('click', (e) => {
+        $('#menu-patients, #mobile-menu-patients').on('click', (e) => {
             e.preventDefault();
             this.showScreen('patients');
         });

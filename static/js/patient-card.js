@@ -65,47 +65,57 @@ const PatientCard = {
         
         const html = `
             <!-- Хедер -->
-            <header class="bg-white border-b border-gray-200 px-8 py-6">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-4">
-                        <button id="back-button" class="p-2 hover:bg-gray-100 rounded-lg">
-                            <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <header class="patient-card-header bg-white border-b border-gray-200 px-4 py-4 lg:px-8 lg:py-6">
+                <div class="flex items-center justify-between mb-4 lg:mb-6">
+                    <div class="flex items-center space-x-2 lg:space-x-4 flex-1 min-w-0">
+                        <button id="back-button" class="p-2 hover:bg-gray-100 rounded-lg flex-shrink-0">
+                            <svg width="20" height="20" class="lg:w-6 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                             </svg>
                         </button>
-                        <div>
-                            <h1 class="text-2xl font-semibold text-gray-900">${patient.full_name}</h1>
-                            <div class="flex items-center text-sm text-gray-600 mt-1">
-                                <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20" class="mr-2">
-                                    <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
-                                </svg>
-                                <span>${Utils.formatDate(appointment.appointment_date)}</span>
-                                <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20" class="ml-4 mr-2">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
-                                </svg>
-                                <span>${appointment.appointment_time_start}–${appointment.appointment_time_end}</span>
+                        <div class="min-w-0 flex-1">
+                            <h1 class="text-lg lg:text-2xl font-semibold text-gray-900 truncate">${patient.full_name}</h1>
+                            <div class="flex flex-col lg:flex-row lg:items-center text-xs lg:text-sm text-gray-600 mt-1 space-y-1 lg:space-y-0">
+                                <div class="flex items-center">
+                                    <svg width="14" height="14" class="lg:w-4 lg:h-4" fill="currentColor" viewBox="0 0 20 20" class="mr-1 lg:mr-2">
+                                        <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                                    </svg>
+                                    <span>${Utils.formatDate(appointment.appointment_date)}</span>
+                                </div>
+                                <div class="flex items-center lg:ml-3">
+                                    <svg width="14" height="14" class="lg:w-4 lg:h-4" fill="currentColor" viewBox="0 0 20 20" class="mr-1 lg:mr-2">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+                                    </svg>
+                                    <span>${appointment.appointment_time_start}–${appointment.appointment_time_end}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <button id="download-pdf-btn" class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center space-x-2">
+                    <button id="download-pdf-btn" class="hidden lg:flex px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 items-center space-x-2 flex-shrink-0 ml-4">
                         <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/>
                         </svg>
                         <span>Скачать</span>
                     </button>
+                    <!-- Mobile download button -->
+                    <button id="download-pdf-btn-mobile" class="lg:hidden p-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 flex-shrink-0 ml-2">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                        </svg>
+                    </button>
                 </div>
                 
                 <!-- Вкладки -->
-                <div class="flex space-x-2 mt-6">
-                    <button class="tab-button px-6 py-3 rounded-lg font-medium transition-colors" 
+                <div class="tabs-container flex space-x-2 overflow-x-auto -mx-4 px-4 lg:mx-0 lg:px-0">
+                    <button class="tab-button px-4 lg:px-6 py-2 lg:py-3 rounded-lg font-medium transition-colors flex-shrink-0" 
                             data-tab="digital-portrait">
                         Цифровой портрет
                     </button>
-                    <button class="tab-button px-6 py-3 rounded-lg font-medium transition-colors" 
+                    <button class="tab-button px-4 lg:px-6 py-2 lg:py-3 rounded-lg font-medium transition-colors flex-shrink-0" 
                             data-tab="anamnesis">
                         Анамнез
                     </button>
-                    <button class="tab-button px-6 py-3 rounded-lg font-medium transition-colors" 
+                    <button class="tab-button px-4 lg:px-6 py-2 lg:py-3 rounded-lg font-medium transition-colors flex-shrink-0" 
                             data-tab="stenogram">
                         Стенограмма
                     </button>
@@ -113,7 +123,7 @@ const PatientCard = {
             </header>
             
             <!-- Контент вкладок -->
-            <div class="px-8 py-6">
+            <div class="px-4 py-4 lg:px-8 lg:py-6">
                 <div id="tab-content"></div>
             </div>
         `;
@@ -125,7 +135,7 @@ const PatientCard = {
             App.backToPatients();
         });
         
-        $('#download-pdf-btn').on('click', () => {
+        $('#download-pdf-btn, #download-pdf-btn-mobile').on('click', () => {
             this.downloadPDF();
         });
         
@@ -350,11 +360,11 @@ const PatientCard = {
                     </div>
                     
                     <!-- Кнопки -->
-                    <div class="flex space-x-4">
-                        <button type="button" id="save-report-btn" class="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium">
+                    <div class="flex flex-col lg:flex-row space-y-3 lg:space-y-0 lg:space-x-4">
+                        <button type="button" id="save-report-btn" class="w-full lg:w-auto px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium">
                             Сохранить черновик
                         </button>
-                        <button type="button" id="submit-to-mis-btn" class="btn-gradient flex items-center space-x-2">
+                        <button type="button" id="submit-to-mis-btn" class="btn-gradient w-full lg:w-auto flex items-center justify-center space-x-2">
                             <span>Занести в МИС</span>
                             <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clip-rule="evenodd"/>

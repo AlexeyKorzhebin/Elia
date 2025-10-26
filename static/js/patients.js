@@ -88,9 +88,9 @@ const Patients = {
         }
         
         return `
-            <div class="mb-8">
-                <h2 class="text-lg font-semibold text-gray-900 mb-4">${formattedDate}</h2>
-                <div class="flex space-x-4 overflow-x-auto pb-4">
+            <div class="appointments-date-group mb-6 lg:mb-8">
+                <h2 class="text-base lg:text-lg font-semibold text-gray-900 mb-3 lg:mb-4">${formattedDate}</h2>
+                <div class="flex flex-col md:flex-row md:space-x-4 md:overflow-x-auto md:pb-4">
                     ${cardsHtml}
                 </div>
             </div>

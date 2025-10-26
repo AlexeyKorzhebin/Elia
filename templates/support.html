@@ -5,13 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Поддержка - {{ app_name }}</title>
     
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="/static/css/styles.css">
     
     <script>
@@ -32,17 +27,88 @@
     </script>
 </head>
 <body class="bg-gray-50 font-sans">
-    <div class="flex h-screen overflow-hidden">
-        <!-- Боковая панель -->
-        <aside class="w-64 bg-white border-r border-gray-200 flex flex-col">
-            <!-- Логотип -->
-            <div class="p-6">
-                <div class="flex items-center">
-                    <img src="/static/images/logo.svg" alt="Elia" width="120" height="40">
+    <!-- Mobile Header -->
+    <div class="mobile-header lg:hidden">
+        <button id="mobile-menu-button" class="mobile-menu-button">
+            <div class="burger-icon">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </button>
+        <img src="/static/images/logo.svg" alt="Elia" height="32">
+        <div style="width: 44px;"></div>
+    </div>
+    
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu-overlay" class="hidden"></div>
+    
+    <!-- Mobile Sidebar -->
+    <aside id="mobile-sidebar" class="flex flex-col">
+        <div class="p-6 border-b border-gray-200">
+            <img src="/static/images/logo.svg" alt="Elia" width="120" height="40">
+        </div>
+        <nav class="flex-1 px-4 py-4">
+            <ul class="space-y-1">
+                <li>
+                    <a href="/" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
+                        </svg>
+                        <span>Мои пациенты</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/organization" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
+                        </svg>
+                        <span>Организация</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/settings" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/>
+                        </svg>
+                        <span>Настройки</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/support" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-elia-dark bg-elia-lavender font-medium">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-2 0c0 .993-.241 1.929-.668 2.754l-1.524-1.525a3.997 3.997 0 00.078-2.183l1.562-1.562C9.927 8.515 10 9.246 10 10zm-5.165 3.913l1.58 1.58A5.98 5.98 0 0110 16a5.976 5.976 0 01-2.516-.552l1.562-1.562a4.006 4.006 0 001.789-.973zm-2.633-2.633a3.996 3.996 0 01-.973-1.789l-1.562 1.562A5.976 5.976 0 004 10c0-.92.236-1.785.668-2.754l1.524 1.525a3.997 3.997 0 00-.078 2.183l-1.562 1.562A5.99 5.99 0 014 10c0-.993.241-1.929.668-2.754l1.524 1.525zm7.758-3.326L13.446 7.5a4 4 0 00-1.789-.973l-1.58-1.58A5.98 5.98 0 0110 4c.92 0 1.785.236 2.754.668l-1.525 1.524a3.997 3.997 0 00-2.183.078L7.5 4.708A5.99 5.99 0 0110 4z"/>
+                        </svg>
+                        <span>Поддержка</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/about" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                        </svg>
+                        <span>О нас</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <div class="p-4 border-t border-gray-200">
+            <div class="flex items-center space-x-3">
+                <img src="https://ui-avatars.com/api/?name=Тимофей+Арзамасцев&background=D0BAFF&color=1A1A1A" alt="Врач" class="w-10 h-10 rounded-full">
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-gray-900 truncate">Тимофей Арзамасцев</p>
+                    <p class="text-xs text-gray-500 truncate">Глав.Врач</p>
                 </div>
             </div>
-            
-            <!-- Меню -->
+        </div>
+    </aside>
+    
+    <div class="flex h-screen overflow-hidden">
+        <!-- Desktop Sidebar -->
+        <aside class="hidden lg:flex lg:w-64 bg-white border-r border-gray-200 flex-col">
+            <div class="p-6">
+                <img src="/static/images/logo.svg" alt="Elia" width="120" height="40">
+            </div>
             <nav class="flex-1 px-4">
                 <ul class="space-y-2">
                     <li>
@@ -74,7 +140,7 @@
                             <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-2 0c0 .993-.241 1.929-.668 2.754l-1.524-1.525a3.997 3.997 0 00.078-2.183l1.562-1.562C9.927 8.515 10 9.246 10 10zm-5.165 3.913l1.58 1.58A5.98 5.98 0 0110 16a5.976 5.976 0 01-2.516-.552l1.562-1.562a4.006 4.006 0 001.789-.973zm-2.633-2.633a3.996 3.996 0 01-.973-1.789l-1.562 1.562A5.976 5.976 0 004 10c0-.92.236-1.785.668-2.754l1.524 1.525a3.997 3.997 0 00-.078 2.183l-1.562 1.562A5.99 5.99 0 014 10c0-.993.241-1.929.668-2.754l1.524 1.525zm7.758-3.326L13.446 7.5a4 4 0 00-1.789-.973l-1.58-1.58A5.98 5.98 0 0110 4c.92 0 1.785.236 2.754.668l-1.525 1.524a3.997 3.997 0 00-2.183.078L7.5 4.708A5.99 5.99 0 0110 4z"/>
                             </svg>
-                            <span class="font-medium">Поддержка</span>
+                            <span>Поддержка</span>
                         </a>
                     </li>
                     <li>
@@ -87,13 +153,9 @@
                     </li>
                 </ul>
             </nav>
-            
-            <!-- Профиль врача -->
             <div class="p-4 border-t border-gray-200">
                 <div class="flex items-center space-x-3">
-                    <img src="https://ui-avatars.com/api/?name=Тимофей+Арзамасцев&background=D0BAFF&color=1A1A1A" 
-                         alt="Врач" 
-                         class="w-10 h-10 rounded-full">
+                    <img src="https://ui-avatars.com/api/?name=Тимофей+Арзамасцев&background=D0BAFF&color=1A1A1A" alt="Врач" class="w-10 h-10 rounded-full">
                     <div class="flex-1 min-w-0">
                         <p class="text-sm font-medium text-gray-900 truncate">Тимофей Арзамасцев</p>
                         <p class="text-xs text-gray-500 truncate">Глав.Врач</p>
@@ -102,54 +164,52 @@
             </div>
         </aside>
         
-        <!-- Основная область -->
-        <main class="flex-1 overflow-y-auto">
-            <!-- Заголовок -->
-            <header class="bg-white border-b border-gray-200 px-8 py-6">
-                <h1 class="text-3xl font-semibold text-gray-900">Поддержка</h1>
-                <p class="mt-2 text-gray-600">Мы всегда готовы помочь вам!</p>
+        <!-- Main -->
+        <main class="flex-1 overflow-y-auto lg:mt-0" style="margin-top: 57px;">
+            <header class="bg-white border-b border-gray-200 px-4 py-4 lg:px-8 lg:py-6">
+                <h1 class="text-2xl lg:text-3xl font-semibold text-gray-900">Поддержка</h1>
+                <p class="mt-2 text-sm lg:text-base text-gray-600">Мы всегда готовы помочь вам!</p>
             </header>
             
-            <!-- Контент -->
-            <div class="px-8 py-6 max-w-5xl">
+            <div class="px-4 py-4 lg:px-8 lg:py-6 max-w-5xl">
                 <!-- Быстрые ссылки -->
-                <div class="grid grid-cols-3 gap-4 mb-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
                     <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6 cursor-pointer hover:shadow-lg transition-shadow">
                         <div class="w-12 h-12 bg-elia-lavender rounded-lg flex items-center justify-center mb-4">
                             <svg width="24" height="24" fill="white" viewBox="0 0 20 20">
                                 <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"/>
                             </svg>
                         </div>
-                        <h3 class="font-semibold text-gray-900 mb-2">База знаний</h3>
-                        <p class="text-sm text-gray-600">Руководства и статьи</p>
+                        <h3 class="font-semibold text-gray-900 mb-2 text-sm lg:text-base">База знаний</h3>
+                        <p class="text-xs lg:text-sm text-gray-600">Руководства и статьи</p>
                     </div>
                     
                     <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-6 cursor-pointer hover:shadow-lg transition-shadow">
-                        <div class="w-12 h-12 bg-elia-blue rounded-lg flex items-center justify-center mb-4">
+                        <div class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center mb-4">
                             <svg width="24" height="24" fill="white" viewBox="0 0 20 20">
                                 <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"/>
                                 <path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z"/>
                             </svg>
                         </div>
-                        <h3 class="font-semibold text-gray-900 mb-2">Чат с поддержкой</h3>
-                        <p class="text-sm text-gray-600">Онлайн-помощь 24/7</p>
+                        <h3 class="font-semibold text-gray-900 mb-2 text-sm lg:text-base">Чат с поддержкой</h3>
+                        <p class="text-xs lg:text-sm text-gray-600">Онлайн-помощь 24/7</p>
                     </div>
                     
                     <div class="bg-gradient-to-br from-pink-50 to-pink-100 rounded-lg p-6 cursor-pointer hover:shadow-lg transition-shadow">
-                        <div class="w-12 h-12 bg-elia-pink rounded-lg flex items-center justify-center mb-4">
+                        <div class="w-12 h-12 bg-pink-500 rounded-lg flex items-center justify-center mb-4">
                             <svg width="24" height="24" fill="white" viewBox="0 0 20 20">
                                 <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
                                 <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
                             </svg>
                         </div>
-                        <h3 class="font-semibold text-gray-900 mb-2">Email поддержка</h3>
-                        <p class="text-sm text-gray-600">support@elia.ru</p>
+                        <h3 class="font-semibold text-gray-900 mb-2 text-sm lg:text-base">Email поддержка</h3>
+                        <p class="text-xs lg:text-sm text-gray-600">support@elia.ru</p>
                     </div>
                 </div>
                 
                 <!-- Форма обращения -->
-                <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
-                    <h2 class="text-xl font-semibold text-gray-900 mb-4">Создать обращение</h2>
+                <div class="bg-white rounded-lg shadow-sm p-4 lg:p-6 mb-6">
+                    <h2 class="text-lg lg:text-xl font-semibold text-gray-900 mb-4">Создать обращение</h2>
                     <form class="space-y-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Тема обращения</label>
@@ -164,22 +224,17 @@
                         
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Заголовок</label>
-                            <input type="text" 
-                                   placeholder="Краткое описание проблемы" 
-                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-elia-lavender">
+                            <input type="text" placeholder="Краткое описание проблемы" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-elia-lavender">
                         </div>
                         
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Описание</label>
-                            <textarea 
-                                rows="6"
-                                placeholder="Подробно опишите вашу проблему или вопрос..."
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-elia-lavender resize-vertical"></textarea>
+                            <textarea rows="6" placeholder="Подробно опишите вашу проблему или вопрос..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-elia-lavender resize-vertical"></textarea>
                         </div>
                         
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Приоритет</label>
-                            <div class="flex space-x-4">
+                            <div class="flex flex-col lg:flex-row lg:space-x-4 space-y-2 lg:space-y-0">
                                 <label class="flex items-center">
                                     <input type="radio" name="priority" value="low" class="mr-2">
                                     <span class="text-sm">Низкий</span>
@@ -195,23 +250,11 @@
                             </div>
                         </div>
                         
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Прикрепить файлы</label>
-                            <div class="drop-zone">
-                                <svg width="48" height="48" class="mx-auto text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
-                                </svg>
-                                <p class="text-sm text-gray-600">Перетащите файлы сюда или нажмите для выбора</p>
-                                <p class="text-xs text-gray-400 mt-1">PNG, JPG, PDF до 10MB</p>
-                                <input type="file" multiple class="hidden">
-                            </div>
-                        </div>
-                        
-                        <div class="flex justify-end space-x-3">
-                            <button type="button" class="px-6 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">
+                        <div class="flex flex-col lg:flex-row justify-end space-y-3 lg:space-y-0 lg:space-x-3">
+                            <button type="button" class="w-full lg:w-auto px-6 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">
                                 Отмена
                             </button>
-                            <button type="submit" class="px-6 py-2 text-elia-dark bg-elia-lavender rounded-xl hover:bg-opacity-90 font-medium transition-all hover:shadow-lg">
+                            <button type="submit" class="w-full lg:w-auto px-6 py-2 text-elia-dark bg-elia-lavender rounded-xl hover:bg-opacity-90 font-medium transition-all hover:shadow-lg">
                                 Отправить обращение
                             </button>
                         </div>
@@ -219,96 +262,56 @@
                 </div>
                 
                 <!-- История обращений -->
-                <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
-                    <h2 class="text-xl font-semibold text-gray-900 mb-4">История обращений</h2>
+                <div class="bg-white rounded-lg shadow-sm p-4 lg:p-6 mb-6">
+                    <h2 class="text-lg lg:text-xl font-semibold text-gray-900 mb-4">История обращений</h2>
                     <div class="space-y-3">
-                        <div class="flex items-start justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
-                            <div class="flex-1">
-                                <div class="flex items-center space-x-3 mb-2">
+                        <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
+                            <div class="flex-1 mb-3 lg:mb-0">
+                                <div class="flex flex-wrap items-center gap-2 mb-2">
                                     <span class="px-3 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-full">Решено</span>
-                                    <span class="text-sm text-gray-500">#12345 • 3 дня назад</span>
+                                    <span class="text-xs lg:text-sm text-gray-500">#12345 • 3 дня назад</span>
                                 </div>
-                                <h3 class="font-medium text-gray-900 mb-1">Проблема с загрузкой аудио файлов</h3>
-                                <p class="text-sm text-gray-600">Не могу загрузить аудио файлы больше 50MB...</p>
+                                <h3 class="font-medium text-gray-900 mb-1 text-sm lg:text-base">Проблема с загрузкой аудио файлов</h3>
+                                <p class="text-xs lg:text-sm text-gray-600">Не могу загрузить аудио файлы больше 50MB...</p>
                             </div>
-                            <svg width="20" height="20" fill="currentColor" class="text-gray-400" viewBox="0 0 20 20">
+                            <svg width="20" height="20" fill="currentColor" class="text-gray-400 flex-shrink-0 lg:ml-4" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
                             </svg>
                         </div>
                         
-                        <div class="flex items-start justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
-                            <div class="flex-1">
-                                <div class="flex items-center space-x-3 mb-2">
+                        <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
+                            <div class="flex-1 mb-3 lg:mb-0">
+                                <div class="flex flex-wrap items-center gap-2 mb-2">
                                     <span class="px-3 py-1 text-xs font-medium text-blue-700 bg-blue-100 rounded-full">В обработке</span>
-                                    <span class="text-sm text-gray-500">#12344 • 5 дней назад</span>
+                                    <span class="text-xs lg:text-sm text-gray-500">#12344 • 5 дней назад</span>
                                 </div>
-                                <h3 class="font-medium text-gray-900 mb-1">Вопрос по функционалу экспорта</h3>
-                                <p class="text-sm text-gray-600">Как экспортировать данные за определенный период?</p>
+                                <h3 class="font-medium text-gray-900 mb-1 text-sm lg:text-base">Вопрос по функционалу экспорта</h3>
+                                <p class="text-xs lg:text-sm text-gray-600">Как экспортировать данные за определенный период?</p>
                             </div>
-                            <svg width="20" height="20" fill="currentColor" class="text-gray-400" viewBox="0 0 20 20">
+                            <svg width="20" height="20" fill="currentColor" class="text-gray-400 flex-shrink-0 lg:ml-4" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
                             </svg>
                         </div>
-                        
-                        <div class="flex items-start justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
-                            <div class="flex-1">
-                                <div class="flex items-center space-x-3 mb-2">
-                                    <span class="px-3 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-full">Решено</span>
-                                    <span class="text-sm text-gray-500">#12343 • 1 неделю назад</span>
-                                </div>
-                                <h3 class="font-medium text-gray-900 mb-1">Предложение по интерфейсу</h3>
-                                <p class="text-sm text-gray-600">Было бы удобно добавить быстрые фильтры...</p>
-                            </div>
-                            <svg width="20" height="20" fill="currentColor" class="text-gray-400" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- FAQ -->
-                <div class="bg-white rounded-lg shadow-sm p-6">
-                    <h2 class="text-xl font-semibold text-gray-900 mb-4">Частые вопросы</h2>
-                    <div class="space-y-3">
-                        <details class="p-4 border border-gray-200 rounded-lg">
-                            <summary class="font-medium text-gray-900 cursor-pointer">Как добавить нового пациента?</summary>
-                            <p class="mt-3 text-sm text-gray-600">Перейдите на главную страницу "Мои пациенты", нажмите кнопку "Выбрать приём" и заполните информацию о пациенте в открывшейся форме.</p>
-                        </details>
-                        
-                        <details class="p-4 border border-gray-200 rounded-lg">
-                            <summary class="font-medium text-gray-900 cursor-pointer">Как загрузить аудио запись приёма?</summary>
-                            <p class="mt-3 text-sm text-gray-600">В карточке пациента перейдите на вкладку "Аудио", затем нажмите "Загрузить аудио" или перетащите файл в область загрузки. Поддерживаются форматы MP3, WAV, M4A.</p>
-                        </details>
-                        
-                        <details class="p-4 border border-gray-200 rounded-lg">
-                            <summary class="font-medium text-gray-900 cursor-pointer">Как изменить настройки уведомлений?</summary>
-                            <p class="mt-3 text-sm text-gray-600">Перейдите в раздел "Настройки" через боковое меню, найдите секцию "Уведомления" и настройте нужные параметры с помощью переключателей.</p>
-                        </details>
-                        
-                        <details class="p-4 border border-gray-200 rounded-lg">
-                            <summary class="font-medium text-gray-900 cursor-pointer">Как экспортировать данные пациента?</summary>
-                            <p class="mt-3 text-sm text-gray-600">Откройте карточку пациента, нажмите на кнопку меню (три точки) в правом верхнем углу и выберите "Экспортировать данные". Вы можете выбрать формат: PDF или JSON.</p>
-                        </details>
                     </div>
                 </div>
                 
                 <!-- Контакты -->
-                <div class="mt-6 bg-elia-lavender rounded-lg p-6 text-elia-dark">
-                    <h3 class="text-xl font-semibold mb-3">Нужна срочная помощь?</h3>
-                    <p class="mb-4">Свяжитесь с нами напрямую по телефону или email</p>
-                    <div class="flex items-center space-x-6">
+                <div class="bg-elia-lavender rounded-lg p-6 text-elia-dark">
+                    <h3 class="text-lg lg:text-xl font-semibold mb-3">Нужна срочная помощь?</h3>
+                    <p class="mb-4 text-sm lg:text-base">Свяжитесь с нами напрямую по телефону или email</p>
+                    <div class="flex flex-col lg:flex-row lg:items-center lg:space-x-6 space-y-3 lg:space-y-0">
                         <div class="flex items-center space-x-2">
                             <svg width="20" height="20" fill="white" viewBox="0 0 20 20">
                                 <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"/>
                             </svg>
-                            <span>+7 (495) 123-45-67</span>
+                            <span class="text-sm lg:text-base">+7 (495) 123-45-67</span>
                         </div>
                         <div class="flex items-center space-x-2">
                             <svg width="20" height="20" fill="white" viewBox="0 0 20 20">
                                 <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
                                 <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
                             </svg>
-                            <span>support@elia.ru</span>
+                            <span class="text-sm lg:text-base">support@elia.ru</span>
                         </div>
                     </div>
                 </div>
@@ -316,10 +319,9 @@
         </main>
     </div>
     
-    <!-- Toast уведомления -->
     <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2"></div>
     
+    <script src="/static/js/mobile-menu.js"></script>
     <script src="/static/js/main.js"></script>
 </body>
 </html>
-
