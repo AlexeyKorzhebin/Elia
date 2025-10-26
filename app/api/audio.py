@@ -15,10 +15,14 @@ from app.models import TranscriptionStatus
 from app.schemas import (
     AudioFileSchema,
     AudioUploadResponse,
-    TranscriptionResponse
+    TranscriptionResponse,
+    MedicalReportSchema
 )
+from app.openai_service import openai_service
+from app.logger import get_logger
 
 router = APIRouter(prefix="/api/audio", tags=["audio"])
+logger = get_logger(__name__)
 
 # Допустимые типы аудиофайлов
 ALLOWED_AUDIO_TYPES = {"audio/mpeg", "audio/mp3", "audio/wav", "audio/wave"}
@@ -209,4 +213,154 @@ async def download_audio(
         media_type=audio.mime_type,
         filename=audio.filename
     )
+
+
+@router.post("/generate-mock-conversation")
+async def generate_mock_conversation(
+    appointment_id: int = Query(..., description="ID приёма"),
+    db: AsyncSession = Depends(get_db)
+):
+    """Сгенерировать mock-разговор через OpenAI API"""
+    logger.info(f"Запрос генерации mock-разговора для приёма: appointment_id={appointment_id}")
+    
+    try:
+        # Проверяем, существует ли приём
+        appointment = await crud.get_appointment(db, appointment_id)
+        if not appointment:
+            logger.warning(f"Попытка генерации для несуществующего приёма: appointment_id={appointment_id}")
+            raise HTTPException(status_code=404, detail="Приём не найден")
+        
+        # Получаем данные пациента
+        patient = await crud.get_patient(db, appointment.patient_id)
+        if not patient:
+            raise HTTPException(status_code=404, detail="Пациент не найден")
+        
+        # Проверяем, не создан ли уже аудиофайл с транскрипцией
+        existing_audio = await crud.get_audio_file_by_appointment(db, appointment_id)
+        if existing_audio and existing_audio.transcription_text:
+            logger.info(f"Для приёма {appointment_id} уже есть транскрипция, перегенерируем")
+        
+        # Генерируем диалог через OpenAI
+        logger.debug(f"Генерация диалога для пациента: {patient.full_name}, возраст: {patient.age}")
+        conversation = await openai_service.generate_conversation(
+            patient_name=patient.full_name,
+            patient_age=patient.age,
+            patient_gender=patient.gender.value if hasattr(patient.gender, 'value') else str(patient.gender)
+        )
+        
+        # Если аудиофайла нет, создаём запись
+        if not existing_audio:
+            # Создаём "виртуальный" аудиофайл (без реального файла)
+            audio = await crud.create_audio_file(
+                db,
+                appointment_id=appointment_id,
+                filename="generated_conversation.txt",
+                filepath="",  # Нет реального файла
+                file_size=len(conversation.encode('utf-8')),
+                mime_type="text/plain"
+            )
+        else:
+            audio = existing_audio
+        
+        # Обновляем транскрипцию
+        audio = await crud.update_transcription(
+            db,
+            audio.id,
+            TranscriptionStatus.COMPLETED,
+            text=conversation
+        )
+        
+        logger.info(f"Mock-разговор успешно сгенерирован: appointment_id={appointment_id}, audio_id={audio.id}")
+        
+        return TranscriptionResponse(
+            success=True,
+            message="Разговор успешно сгенерирован через OpenAI",
+            transcription_status=audio.transcription_status,
+            transcription_text=audio.transcription_text,
+            transcribed_at=audio.transcribed_at
+        )
+        
+    except HTTPException:
+        raise
+    except ValueError as e:
+        logger.error(f"Ошибка конфигурации при генерации разговора: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+    except Exception as e:
+        logger.error(f"Ошибка при генерации mock-разговора: appointment_id={appointment_id}, error={str(e)}")
+        raise HTTPException(status_code=500, detail=f"Ошибка генерации разговора: {str(e)}")
+
+
+@router.post("/{audio_id}/extract-anamnesis", response_model=MedicalReportSchema)
+async def extract_anamnesis_from_transcription(
+    audio_id: int,
+    db: AsyncSession = Depends(get_db)
+):
+    """Извлечь данные анамнеза из транскрипции через OpenAI API"""
+    logger.info(f"Запрос извлечения анамнеза из транскрипции: audio_id={audio_id}")
+    
+    try:
+        # Получаем аудиофайл
+        audio = await crud.get_audio_file(db, audio_id)
+        if not audio:
+            logger.warning(f"Попытка извлечения анамнеза из несуществующего аудио: audio_id={audio_id}")
+            raise HTTPException(status_code=404, detail="Аудиофайл не найден")
+        
+        # Проверяем наличие транскрипции
+        if not audio.transcription_text:
+            logger.warning(f"Попытка извлечения анамнеза без транскрипции: audio_id={audio_id}")
+            raise HTTPException(status_code=400, detail="Транскрипция отсутствует. Сначала создайте транскрипцию.")
+        
+        # Извлекаем данные через OpenAI
+        logger.debug(f"Извлечение данных анамнеза, длина транскрипции: {len(audio.transcription_text)}")
+        anamnesis_data = await openai_service.extract_anamnesis_data(audio.transcription_text)
+        
+        # Получаем appointment_id
+        appointment_id = audio.appointment_id
+        
+        # Создаём или обновляем медицинский отчёт
+        report = await crud.create_or_update_medical_report(
+            db,
+            appointment_id,
+            purpose=anamnesis_data.get("purpose"),
+            complaints=anamnesis_data.get("complaints"),
+            anamnesis=anamnesis_data.get("anamnesis")
+        )
+        
+        logger.info(f"Анамнез успешно извлечён и сохранён: audio_id={audio_id}, appointment_id={appointment_id}")
+        
+        return report
+        
+    except HTTPException:
+        raise
+    except ValueError as e:
+        logger.error(f"Ошибка конфигурации при извлечении анамнеза: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+    except Exception as e:
+        logger.error(f"Ошибка при извлечении анамнеза: audio_id={audio_id}, error={str(e)}")
+        raise HTTPException(status_code=500, detail=f"Ошибка извлечения анамнеза: {str(e)}")
+
+
+@router.post("/extract-anamnesis-by-appointment", response_model=MedicalReportSchema)
+async def extract_anamnesis_by_appointment(
+    appointment_id: int = Query(..., description="ID приёма"),
+    db: AsyncSession = Depends(get_db)
+):
+    """Извлечь анамнез по appointment_id (вспомогательный endpoint)"""
+    logger.info(f"Запрос извлечения анамнеза по приёму: appointment_id={appointment_id}")
+    
+    try:
+        # Находим аудиофайл по appointment_id
+        audio = await crud.get_audio_file_by_appointment(db, appointment_id)
+        if not audio:
+            logger.warning(f"Аудиофайл не найден для приёма: appointment_id={appointment_id}")
+            raise HTTPException(status_code=404, detail="Аудиофайл не найден для этого приёма")
+        
+        # Используем существующую логику
+        return await extract_anamnesis_from_transcription(audio.id, db)
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Ошибка при извлечении анамнеза по приёму: appointment_id={appointment_id}, error={str(e)}")
+        raise HTTPException(status_code=500, detail=f"Ошибка извлечения анамнеза: {str(e)}")
 

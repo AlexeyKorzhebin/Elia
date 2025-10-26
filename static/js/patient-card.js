@@ -151,7 +151,7 @@ const PatientCard = {
     /**
      * Переключить вкладку
      */
-    switchTab(tab) {
+    async switchTab(tab) {
         this.currentTab = tab;
         
         // Обновляем стили кнопок
@@ -166,6 +166,8 @@ const PatientCard = {
                 content.html(this.renderDigitalPortrait());
                 break;
             case 'anamnesis':
+                // Перезагружаем данные отчёта перед рендерингом
+                await this.reloadReportData();
                 content.html(this.renderAnamnesis());
                 this.initAnamnesisHandlers();
                 break;
@@ -173,6 +175,21 @@ const PatientCard = {
                 content.html(this.renderStenogram());
                 AudioHandler.init(this.appointmentData.id);
                 break;
+        }
+    },
+    
+    /**
+     * Перезагрузить данные отчёта
+     */
+    async reloadReportData() {
+        try {
+            const reportResponse = await fetch(`/api/appointments/${this.appointmentData.id}/report`);
+            if (reportResponse.ok) {
+                this.reportData = await reportResponse.json();
+            }
+        } catch (e) {
+            // Если отчёт не найден, оставляем null
+            console.log('Отчёт не найден или ошибка загрузки');
         }
     },
     

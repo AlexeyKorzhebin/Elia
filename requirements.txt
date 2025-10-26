@@ -24,3 +24,9 @@ python-dotenv==1.0.1
 # Генерация PDF
 reportlab==4.2.5
 
+# Templating
+jinja2>=3.1.0
+
+# OpenAI API
+openai>=1.0.0
+

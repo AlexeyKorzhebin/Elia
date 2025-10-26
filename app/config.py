@@ -31,6 +31,11 @@ class Settings(BaseSettings):
     log_level: str = "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
     log_dir: str = "logs"
     log_retention_days: int = 30  # Сколько дней хранить логи
+    
+    # OpenAI API
+    openai_api_key: str = ""
+    openai_base_url: str = "https://api.openai.com/v1"
+    openai_model: str = "gpt-4"
 
 
 settings = Settings()
