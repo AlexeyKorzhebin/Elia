@@ -50,6 +50,9 @@ static/uploads/*
 .pytest_cache/
 .coverage
 htmlcov/
+
+# Logs
+logs/
 *.log
 
 # Playwright

@@ -1,5 +1,4 @@
 """Главное приложение FastAPI"""
-import logging
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
@@ -10,13 +9,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.database import init_db
 from app.api import patients, appointments, audio
+from app.logger import setup_logging, get_logger
+from app.middleware import LoggingMiddleware, ErrorLoggingMiddleware
 
 # Настройка логирования
-logging.basicConfig(
-    level=logging.INFO if settings.debug else logging.WARNING,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
-logger = logging.getLogger(__name__)
+setup_logging(app_name="elia", log_level=settings.log_level)
+logger = get_logger(__name__)
 
 
 @asynccontextmanager
@@ -40,6 +38,10 @@ app = FastAPI(
     description="AI-платформа для врача - MVP",
     lifespan=lifespan
 )
+
+# Middleware для логирования (добавляем первым)
+app.add_middleware(ErrorLoggingMiddleware)
+app.add_middleware(LoggingMiddleware)
 
 # CORS middleware (для разработки)
 app.add_middleware(

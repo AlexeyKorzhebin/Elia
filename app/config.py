@@ -26,6 +26,11 @@ class Settings(BaseSettings):
     # Application
     app_name: str = "Elia AI Platform"
     version: str = "1.0.0"
+    
+    # Logging
+    log_level: str = "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+    log_dir: str = "logs"
+    log_retention_days: int = 30  # Сколько дней хранить логи
 
 
 settings = Settings()
