@@ -206,3 +206,13 @@ async def update_transcription(
     await db.refresh(audio)
     return audio
 
+
+async def delete_audio_file(db: AsyncSession, audio_id: int) -> None:
+    """Удалить аудиофайл"""
+    audio = await get_audio_file(db, audio_id)
+    if not audio:
+        raise ValueError("Аудиофайл не найден")
+    
+    await db.delete(audio)
+    await db.commit()
+

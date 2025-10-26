@@ -105,6 +105,38 @@ async def upload_audio_file(
     )
 
 
+@router.put("/{audio_id}/transcription")
+async def update_transcription_text(
+    audio_id: int,
+    transcription_text: str = Query(..., description="Обновлённый текст транскрипции"),
+    db: AsyncSession = Depends(get_db)
+):
+    """Обновить текст транскрипции"""
+    logger.info(f"Запрос на обновление транскрипции: audio_id={audio_id}")
+    
+    audio = await crud.get_audio_file(db, audio_id)
+    if not audio:
+        raise HTTPException(status_code=404, detail="Аудиофайл не найден")
+    
+    # Обновляем текст транскрипции
+    audio = await crud.update_transcription(
+        db,
+        audio_id,
+        TranscriptionStatus.COMPLETED,
+        text=transcription_text
+    )
+    
+    logger.info(f"Транскрипция обновлена: audio_id={audio_id}, text_length={len(transcription_text)}")
+    
+    return TranscriptionResponse(
+        success=True,
+        message="Транскрипция успешно обновлена",
+        transcription_status=audio.transcription_status,
+        transcription_text=audio.transcription_text,
+        transcribed_at=audio.transcribed_at
+    )
+
+
 @router.post("/{audio_id}/transcribe", response_model=TranscriptionResponse)
 async def transcribe_audio(
     audio_id: int,
@@ -180,6 +212,18 @@ async def transcribe_audio(
         transcription_text=audio.transcription_text,
         transcribed_at=audio.transcribed_at
     )
+
+
+@router.get("/by-appointment/{appointment_id}", response_model=AudioFileSchema)
+async def get_audio_by_appointment(
+    appointment_id: int,
+    db: AsyncSession = Depends(get_db)
+):
+    """Получить аудиофайл по ID приёма"""
+    audio = await crud.get_audio_file_by_appointment(db, appointment_id)
+    if not audio:
+        raise HTTPException(status_code=404, detail="Аудиофайл не найден для этого приёма")
+    return audio
 
 
 @router.get("/{audio_id}", response_model=AudioFileSchema)
@@ -270,7 +314,7 @@ async def generate_mock_conversation(
             text=conversation
         )
         
-        logger.info(f"Mock-разговор успешно сгенерирован: appointment_id={appointment_id}, audio_id={audio.id}")
+        logger.info(f"Mock-разговор успешно сгенерирован и сохранён: appointment_id={appointment_id}, audio_id={audio.id}, text_length={len(conversation)}")
         
         return TranscriptionResponse(
             success=True,
@@ -363,4 +407,32 @@ async def extract_anamnesis_by_appointment(
     except Exception as e:
         logger.error(f"Ошибка при извлечении анамнеза по приёму: appointment_id={appointment_id}, error={str(e)}")
         raise HTTPException(status_code=500, detail=f"Ошибка извлечения анамнеза: {str(e)}")
+
+
+@router.delete("/by-appointment/{appointment_id}")
+async def delete_audio_by_appointment(
+    appointment_id: int,
+    db: AsyncSession = Depends(get_db)
+):
+    """Удалить аудиофайл и транскрипцию для приёма"""
+    logger.info(f"Запрос на удаление аудио для приёма: appointment_id={appointment_id}")
+    
+    # Находим аудиофайл
+    audio = await crud.get_audio_file_by_appointment(db, appointment_id)
+    if not audio:
+        raise HTTPException(status_code=404, detail="Аудиофайл не найден для этого приёма")
+    
+    # Удаляем физический файл, если он существует
+    if audio.filepath and os.path.exists(audio.filepath):
+        try:
+            os.remove(audio.filepath)
+            logger.info(f"Физический файл удалён: {audio.filepath}")
+        except Exception as e:
+            logger.warning(f"Не удалось удалить физический файл: {e}")
+    
+    # Удаляем запись из БД
+    await crud.delete_audio_file(db, audio.id)
+    logger.info(f"Аудиофайл удалён из БД: audio_id={audio.id}, appointment_id={appointment_id}")
+    
+    return {"success": True, "message": "Аудиофайл успешно удалён"}
 
