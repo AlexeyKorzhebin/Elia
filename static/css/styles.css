@@ -283,3 +283,113 @@ textarea {
     margin-bottom: 16px;
 }
 
+.section-blue {
+    background-color: var(--elia-cyan);
+    padding: 24px;
+    border-radius: 16px;
+    margin-bottom: 16px;
+}
+
+/* Digital Portrait Layout */
+.digital-portrait-container {
+    max-width: 100%;
+    width: 100%;
+}
+
+/* Верхняя сетка - три карточки */
+.portrait-grid-top {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+/* Нижняя сетка - две карточки */
+.portrait-grid-bottom {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+/* Сетка показателей здоровья */
+.health-indicators-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+
+/* Адаптивность для планшетов (до 1024px) */
+@media (max-width: 1024px) {
+    .portrait-grid-top {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .portrait-grid-bottom {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .health-indicators-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+}
+
+/* Адаптивность для мобильных устройств (до 768px) */
+@media (max-width: 768px) {
+    .digital-portrait-container {
+        padding: 0;
+    }
+    
+    .section-cyan,
+    .section-pink,
+    .section-yellow,
+    .section-blue,
+    .section-green {
+        padding: 16px;
+        border-radius: 12px;
+    }
+    
+    .portrait-grid-top {
+        gap: 10px;
+    }
+    
+    .portrait-grid-bottom {
+        gap: 10px;
+    }
+    
+    .health-indicators-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .health-card {
+        padding: 16px;
+    }
+    
+    .section-header {
+        font-size: 1.125rem;
+    }
+}
+
+/* Большие экраны (от 1440px) */
+@media (min-width: 1440px) {
+    .digital-portrait-container {
+        max-width: 1400px;
+    }
+    
+    .portrait-grid-top {
+        gap: 20px;
+    }
+    
+    .portrait-grid-bottom {
+        gap: 20px;
+    }
+    
+    .health-indicators-grid {
+        gap: 20px;
+    }
+}
+

@@ -174,121 +174,129 @@ const PatientCard = {
         const health = patient.health_indicators || {};
         
         return `
-            <div class="max-w-6xl">
+            <div class="digital-portrait-container">
                 <h2 class="section-header">Цифровой портрет</h2>
                 
-                <!-- Основные данные -->
-                <div class="section-cyan">
-                    <h3 class="font-semibold text-lg mb-4">Основные данные</h3>
-                    <div class="grid grid-cols-2 gap-4 text-sm">
-                        <div>
-                            <span class="text-gray-600">Пол</span>
-                            <p class="font-medium">${patient.gender === 'male' ? 'Мужской' : 'Женский'}</p>
-                        </div>
-                        <div>
-                            <span class="text-gray-600">Возраст</span>
-                            <p class="font-medium">${patient.age}</p>
-                        </div>
-                        <div>
-                            <span class="text-gray-600">МО прикрепления</span>
-                            <p class="font-medium">${patient.medical_organization}</p>
-                        </div>
-                        <div>
-                            <span class="text-gray-600">Участок прикрепления</span>
-                            <p class="font-medium">${patient.medical_area}</p>
-                        </div>
-                        <div>
-                            <span class="text-gray-600">Дата последнего обращения</span>
-                            <p class="font-medium">${patient.last_visit_date ? Utils.formatDate(patient.last_visit_date) : 'Нет данных'}</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Хронические заболевания -->
-                <div class="section-pink">
-                    <h3 class="font-semibold text-lg mb-4">Хронические заболевания</h3>
-                    ${patient.chronic_diseases.length > 0 ? `
-                        <ul class="list-disc list-inside space-y-2">
-                            ${patient.chronic_diseases.map(d => `<li>${d.name}</li>`).join('')}
-                        </ul>
-                    ` : '<p class="text-gray-600">Нет данных</p>'}
-                </div>
-                
-                <!-- Последние заболевания -->
-                <div class="section-yellow">
-                    <h3 class="font-semibold text-lg mb-4">Последние заболевания</h3>
-                    ${patient.recent_diseases.length > 0 ? `
-                        <ul class="list-disc list-inside space-y-2">
-                            ${patient.recent_diseases.map(d => `<li>${d.name}</li>`).join('')}
-                        </ul>
-                    ` : '<p class="text-gray-600">Нет данных</p>'}
-                </div>
-                
-                <!-- Саммари -->
-                <div class="section-blue">
-                    <h3 class="font-semibold text-lg mb-4">Саммари</h3>
-                    <div class="flex items-start space-x-3 mb-3">
-                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20" class="text-blue-600 flex-shrink-0 mt-0.5">
-                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
-                        </svg>
-                        <p>Уровень внимания по диспансеризации: без COVID-19, коморбидных заболеваний и с мед. осмотром в течение 2 лет</p>
-                    </div>
-                    <div class="flex items-start space-x-3">
-                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20" class="text-blue-600 flex-shrink-0 mt-0.5">
-                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
-                        </svg>
-                        <p>Целевые цифры АД не достигнуты</p>
-                    </div>
-                </div>
-                
-                <!-- Основные показатели здоровья -->
-                <div class="section-green">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="font-semibold text-lg">Основные показатели здоровья</h3>
-                        <a href="#" class="text-sm text-elia-lavender hover:underline">Подробнее</a>
-                    </div>
-                    <div class="grid grid-cols-4 gap-4">
-                        <div class="health-card">
-                            <svg width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                            </svg>
-                            <div class="text-center mt-2">
-                                <p class="text-xs text-gray-600 mb-1">Гемоглобин</p>
-                                <p class="health-card-value">${health.hemoglobin || '—'}</p>
-                                <p class="health-card-unit">${health.hemoglobin ? 'г/л' : ''}</p>
+                <!-- Верхняя строка: три карточки -->
+                <div class="portrait-grid-top">
+                    <!-- Основные данные -->
+                    <div class="section-cyan">
+                        <h3 class="font-semibold text-lg mb-4">Основные данные</h3>
+                        <div class="space-y-3 text-sm">
+                            <div>
+                                <span class="text-gray-600 block text-xs mb-1">Пол</span>
+                                <p class="font-medium">${patient.gender === 'male' ? 'Мужской' : 'Женский'}</p>
+                            </div>
+                            <div>
+                                <span class="text-gray-600 block text-xs mb-1">Возраст</span>
+                                <p class="font-medium">${patient.age}</p>
+                            </div>
+                            <div>
+                                <span class="text-gray-600 block text-xs mb-1">МО прикрепления</span>
+                                <p class="font-medium">${patient.medical_organization}</p>
+                            </div>
+                            <div>
+                                <span class="text-gray-600 block text-xs mb-1">Участок прикрепления</span>
+                                <p class="font-medium">${patient.medical_area}</p>
+                            </div>
+                            <div>
+                                <span class="text-gray-600 block text-xs mb-1">Дата последнего обращения</span>
+                                <p class="font-medium">${patient.last_visit_date ? Utils.formatDate(patient.last_visit_date) : 'Нет данных'}</p>
                             </div>
                         </div>
-                        
-                        <div class="health-card">
-                            <svg width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                            <div class="text-center mt-2">
-                                <p class="text-xs text-gray-600 mb-1">Холестерин</p>
-                                <p class="health-card-value">${health.cholesterol || '—'}</p>
-                                <p class="health-card-unit">${health.cholesterol ? 'ммоль/л' : ''}</p>
+                    </div>
+                    
+                    <!-- Хронические заболевания -->
+                    <div class="section-pink">
+                        <h3 class="font-semibold text-lg mb-4">Хронические заболевания</h3>
+                        ${patient.chronic_diseases.length > 0 ? `
+                            <ul class="list-disc list-inside space-y-2 text-sm">
+                                ${patient.chronic_diseases.map(d => `<li>${d.name}</li>`).join('')}
+                            </ul>
+                        ` : '<p class="text-gray-600 text-sm">Нет данных</p>'}
+                    </div>
+                    
+                    <!-- Последние заболевания -->
+                    <div class="section-yellow">
+                        <h3 class="font-semibold text-lg mb-4">Последние заболевания</h3>
+                        ${patient.recent_diseases.length > 0 ? `
+                            <ul class="list-disc list-inside space-y-2 text-sm">
+                                ${patient.recent_diseases.map(d => `<li>${d.name}</li>`).join('')}
+                            </ul>
+                        ` : '<p class="text-gray-600 text-sm">Нет данных</p>'}
+                    </div>
+                </div>
+                
+                <!-- Нижняя строка: две широкие карточки -->
+                <div class="portrait-grid-bottom">
+                    <!-- Саммари -->
+                    <div class="section-blue">
+                        <h3 class="font-semibold text-lg mb-4">Саммари</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-start space-x-3">
+                                <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20" class="text-blue-600 flex-shrink-0 mt-0.5">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                                </svg>
+                                <p class="text-sm">Уровень внимания по диспансеризации: без COVID-19, коморбидных заболеваний и с мед. осмотром в течение 2 лет</p>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20" class="text-blue-600 flex-shrink-0 mt-0.5">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                                </svg>
+                                <p class="text-sm">Целевые цифры АД не достигнуты</p>
                             </div>
                         </div>
-                        
-                        <div class="health-card">
-                            <svg width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                            </svg>
-                            <div class="text-center mt-2">
-                                <p class="text-xs text-gray-600 mb-1">ИМТ</p>
-                                <p class="health-card-value">${health.bmi || '—'}</p>
-                                <p class="health-card-unit">${health.bmi ? 'кг/м²' : ''}</p>
-                            </div>
+                    </div>
+                    
+                    <!-- Основные показатели здоровья -->
+                    <div class="section-green">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="font-semibold text-lg">Основные показатели здоровья</h3>
+                            <a href="#" class="text-sm text-purple-600 hover:text-purple-700 font-medium">Подробнее</a>
                         </div>
-                        
-                        <div class="health-card">
-                            <svg width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                            </svg>
-                            <div class="text-center mt-2">
-                                <p class="text-xs text-gray-600 mb-1">ЧСС</p>
-                                <p class="health-card-value">${health.heart_rate || '—'}</p>
-                                <p class="health-card-unit">${health.heart_rate ? 'уд/мин' : ''}</p>
+                        <div class="health-indicators-grid">
+                            <div class="health-card">
+                                <svg width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="text-red-500">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                                </svg>
+                                <div class="text-center mt-3">
+                                    <p class="text-xs text-gray-600 mb-1">Гемоглобин</p>
+                                    <p class="health-card-value">${health.hemoglobin || '—'}</p>
+                                    <p class="health-card-unit">${health.hemoglobin ? 'г/л' : ''}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="health-card">
+                                <svg width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="text-orange-500">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <div class="text-center mt-3">
+                                    <p class="text-xs text-gray-600 mb-1">Холестерин</p>
+                                    <p class="health-card-value">${health.cholesterol || '—'}</p>
+                                    <p class="health-card-unit">${health.cholesterol ? 'ммоль/л' : ''}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="health-card">
+                                <svg width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="text-gray-600">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                </svg>
+                                <div class="text-center mt-3">
+                                    <p class="text-xs text-gray-600 mb-1">ИМТ</p>
+                                    <p class="health-card-value">${health.bmi || '—'}</p>
+                                    <p class="health-card-unit">${health.bmi ? 'кг/м²' : ''}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="health-card">
+                                <svg width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="text-blue-500">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                                </svg>
+                                <div class="text-center mt-3">
+                                    <p class="text-xs text-gray-600 mb-1">ЧСС</p>
+                                    <p class="health-card-value">${health.heart_rate || '—'}</p>
+                                    <p class="health-card-unit">${health.heart_rate ? 'уд/мин' : ''}</p>
+                                </div>
                             </div>
                         </div>
                     </div>
