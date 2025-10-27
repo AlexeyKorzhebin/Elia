@@ -82,7 +82,34 @@ cd /Users/aleksey.korzhebin/Yandex.Disk.localized/Projects/Research/Elia
 
 ---
 
-### 4. `update-server.sh` - Обновление приложения
+### 4. `server-resources.sh` - Мониторинг ресурсов
+
+Показывает подробную информацию об использовании ресурсов на сервере.
+
+```bash
+./scripts/server-resources.sh
+```
+
+**Что показывает:**
+- Использование CPU и памяти Docker контейнером
+- Основной процесс и его ресурсы
+- Общая память системы
+- Использование диска
+- Размер базы данных
+- Загрузка системы (load average)
+- Сетевая активность
+- Время работы
+- Здоровье приложения
+
+**Когда использовать:**
+- Для проверки производительности
+- При диагностике проблем
+- Для планирования масштабирования
+- Регулярный мониторинг
+
+---
+
+### 5. `update-server.sh` - Обновление приложения
 
 Обновляет приложение до последней версии из Docker Hub.
 
@@ -104,7 +131,7 @@ cd /Users/aleksey.korzhebin/Yandex.Disk.localized/Projects/Research/Elia
 
 ---
 
-### 5. `setup-docker.sh` - Настройка Docker окружения
+### 6. `setup-docker.sh` - Настройка Docker окружения
 
 Автоматически настраивает Docker окружение для работы с проектом.
 
@@ -125,7 +152,7 @@ cd /Users/aleksey.korzhebin/Yandex.Disk.localized/Projects/Research/Elia
 
 ---
 
-### 6. `build-and-push.sh` - Сборка и публикация
+### 7. `build-and-push.sh` - Сборка и публикация
 
 Собирает Docker образ и публикует на Docker Hub.
 
