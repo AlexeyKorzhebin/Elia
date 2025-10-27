@@ -31,9 +31,10 @@ echo ""
 echo -e "${BLUE}💾 Память системы:${NC}"
 ssh $SERVER "free -h | grep Mem | awk '{print \"Всего: \"\$2\"  |  Используется: \"\$3\"  |  Свободно: \"\$4\"  |  Доступно: \"\$7}'"
 MEMORY_PERCENT=$(ssh $SERVER "free | grep Mem | awk '{printf \"%.1f\", \$3/\$2 * 100}'")
-if (( $(echo "$MEMORY_PERCENT > 80" | bc -l) )); then
+# Используем awk вместо bc для сравнения
+if [ $(echo "$MEMORY_PERCENT" | awk '{print ($1 > 80)}') -eq 1 ]; then
     echo -e "${RED}⚠️  Использование памяти: ${MEMORY_PERCENT}%${NC}"
-elif (( $(echo "$MEMORY_PERCENT > 60" | bc -l) )); then
+elif [ $(echo "$MEMORY_PERCENT" | awk '{print ($1 > 60)}') -eq 1 ]; then
     echo -e "${YELLOW}⚠️  Использование памяти: ${MEMORY_PERCENT}%${NC}"
 else
     echo -e "${GREEN}✓ Использование памяти: ${MEMORY_PERCENT}%${NC}"
@@ -83,14 +84,15 @@ echo ""
 
 # Systemd сервис
 echo -e "${BLUE}🔧 Systemd сервис:${NC}"
-ssh $SERVER "systemctl show elia-platform --property=MemoryCurrent,CPUUsageNSec,TasksCurrent | 
-    while IFS='=' read key value; do
-        case \$key in
-            MemoryCurrent) echo \"Память: \$(numfmt --to=iec \$value 2>/dev/null || echo \$value)\" ;;
-            CPUUsageNSec) echo \"CPU время: \$(echo \"\$value / 1000000000\" | bc)s\" ;;
-            TasksCurrent) echo \"Задачи: \$value\" ;;
-        esac
-    done"
+ssh $SERVER "
+    ENABLED=\$(systemctl is-enabled elia-platform 2>/dev/null || echo 'unknown')
+    ACTIVE=\$(systemctl is-active elia-platform 2>/dev/null || echo 'unknown')
+    echo \"Статус: \$ACTIVE\"
+    echo \"Автозапуск: \$ENABLED\"
+    systemctl show elia-platform --property=ExecMainStartTimestamp | grep -q '=' && \
+        systemctl show elia-platform --property=ExecMainStartTimestamp | sed 's/ExecMainStartTimestamp=/Запущен: /' || \
+        echo 'Запущен: N/A'
+"
 echo ""
 
 # Проверка здоровья
