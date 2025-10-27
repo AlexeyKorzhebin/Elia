@@ -80,3 +80,6 @@ test_workflow.py
 # Data
 data/*.pdf
 
+# Systemd (установлен на сервере)
+*.service
+

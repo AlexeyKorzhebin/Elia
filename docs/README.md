@@ -47,6 +47,7 @@
 | [DEPLOYMENT_SUCCESS.md](DEPLOYMENT_SUCCESS.md) | Итоги успешного развёртывания |
 | [DEPLOY_PARAMETERS.md](DEPLOY_PARAMETERS.md) | Параметры и настройки для деплоя |
 | [DEPLOY_SCRIPT_UPDATED.md](DEPLOY_SCRIPT_UPDATED.md) | Обновлённый скрипт развёртывания |
+| [SYSTEMD_SERVICE.md](SYSTEMD_SERVICE.md) | Управление через systemd сервис |
 
 ---
 
