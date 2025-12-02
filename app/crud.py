@@ -8,7 +8,7 @@ from sqlalchemy.orm import selectinload
 from app.models import (
     Patient, Appointment, MedicalReport, AudioFile,
     ChronicDisease, RecentDisease, HealthIndicator,
-    TranscriptionStatus
+    TranscriptionStatus, TestData
 )
 
 
@@ -261,4 +261,32 @@ async def update_blood_pressure(
     await db.commit()
     await db.refresh(indicators)
     return indicators
+
+
+# === Test Data CRUD ===
+
+async def get_test_data(db: AsyncSession, key: str = "transcription_text") -> Optional[TestData]:
+    """Получить тестовые данные по ключу"""
+    result = await db.execute(
+        select(TestData).where(TestData.key == key)
+    )
+    return result.scalar_one_or_none()
+
+
+async def create_or_update_test_data(db: AsyncSession, content: str, key: str = "transcription_text") -> TestData:
+    """Создать или обновить тестовые данные"""
+    test_data = await get_test_data(db, key)
+    
+    if test_data:
+        # Обновляем существующие данные
+        test_data.content = content
+        test_data.updated_at = datetime.utcnow()
+    else:
+        # Создаём новые данные
+        test_data = TestData(key=key, content=content)
+        db.add(test_data)
+    
+    await db.commit()
+    await db.refresh(test_data)
+    return test_data
 

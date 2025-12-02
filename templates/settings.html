@@ -12,7 +12,7 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="stylesheet" href="/static/css/styles.css?v={{ version }}">
     
     <script>
         tailwind.config = {
@@ -313,6 +313,19 @@
                     </div>
                 </div>
                 
+                <!-- Тестовые данные -->
+                <div class="bg-white rounded-lg shadow-sm p-4 lg:p-6 mb-6">
+                    <h2 class="text-lg lg:text-xl font-semibold text-gray-900 mb-4">Тестовые данные</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <p class="text-sm text-gray-600 mb-2">Текст стенограммы для mock-транскрипции</p>
+                            <button id="open-test-data-btn" class="text-xs text-gray-500 hover:text-gray-700 underline">
+                                Редактировать тестовые данные
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
                 <!-- Опасная зона -->
                 <div class="bg-white rounded-lg shadow-sm p-4 lg:p-6 border-2 border-red-200">
                     <h2 class="text-lg lg:text-xl font-semibold text-red-600 mb-4">Опасная зона</h2>
@@ -344,7 +357,83 @@
     
     <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2"></div>
     
-    <script src="/static/js/mobile-menu.js"></script>
-    <script src="/static/js/main.js"></script>
+    <!-- Модальное окно для редактирования тестовых данных -->
+    <div id="test-data-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] flex flex-col">
+            <div class="flex items-center justify-between p-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900">Редактирование тестовых данных</h3>
+                <button id="close-test-data-modal" class="text-gray-400 hover:text-gray-600">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="flex-1 overflow-y-auto p-4">
+                <textarea id="test-data-content" class="w-full h-full min-h-[400px] p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-elia-lavender font-mono text-sm" placeholder="Введите текст стенограммы..."></textarea>
+            </div>
+            <div class="flex items-center justify-end space-x-3 p-4 border-t border-gray-200">
+                <button id="cancel-test-data" class="px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">
+                    Отмена
+                </button>
+                <button id="save-test-data" class="px-4 py-2 text-sm text-elia-dark bg-elia-lavender rounded-lg hover:bg-opacity-90 font-medium">
+                    Сохранить
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="/static/js/mobile-menu.js?v={{ version }}"></script>
+    <script src="/static/js/main.js?v={{ version }}"></script>
+    <script>
+        // Управление тестовыми данными
+        $(document).ready(function() {
+            // Загрузка данных при открытии модального окна
+            $('#open-test-data-btn').on('click', async function() {
+                $('#test-data-modal').removeClass('hidden');
+                try {
+                    const response = await fetch('/api/test-data');
+                    const data = await response.json();
+                    $('#test-data-content').val(data.content || '');
+                } catch (error) {
+                    console.error('Ошибка загрузки тестовых данных:', error);
+                    $('#test-data-content').val('');
+                }
+            });
+            
+            // Закрытие модального окна
+            $('#close-test-data-modal, #cancel-test-data').on('click', function() {
+                $('#test-data-modal').addClass('hidden');
+            });
+            
+            // Сохранение данных
+            $('#save-test-data').on('click', async function() {
+                const content = $('#test-data-content').val();
+                try {
+                    const response = await fetch('/api/test-data', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ content: content })
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        $('#test-data-modal').addClass('hidden');
+                        // Показываем уведомление об успехе
+                        const toast = $(`
+                            <div class="bg-green-500 text-white px-4 py-3 rounded-lg shadow-lg">
+                                Данные успешно сохранены
+                            </div>
+                        `);
+                        $('#toast-container').append(toast);
+                        setTimeout(() => toast.fadeOut(() => toast.remove()), 3000);
+                    }
+                } catch (error) {
+                    console.error('Ошибка сохранения тестовых данных:', error);
+                    alert('Ошибка сохранения данных');
+                }
+            });
+        });
+    </script>
 </body>
 </html>

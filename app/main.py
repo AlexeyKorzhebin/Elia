@@ -1,14 +1,17 @@
 """Главное приложение FastAPI"""
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Depends, Body
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.ext.asyncio import AsyncSession
+from pathlib import Path
 
 from app.config import settings
-from app.database import init_db
+from app.database import init_db, get_db
 from app.api import patients, appointments, audio
+from app import crud
 from app.logger import setup_logging, get_logger
 from app.middleware import LoggingMiddleware, ErrorLoggingMiddleware
 
@@ -23,6 +26,23 @@ async def lifespan(app: FastAPI):
     # Startup
     logger.info("Инициализация базы данных...")
     await init_db()
+    
+    # Инициализация тестовых данных из файла, если их нет в БД
+    try:
+        from app.database import async_session_maker
+        async with async_session_maker() as db:
+            test_data = await crud.get_test_data(db)
+            if not test_data:
+                # Пытаемся загрузить из файла
+                talk_file_path = Path("data/talk.md")
+                if talk_file_path.exists():
+                    with open(talk_file_path, "r", encoding="utf-8") as f:
+                        content = f.read()
+                    await crud.create_or_update_test_data(db, content)
+                    logger.info("Тестовые данные загружены из файла talk.md")
+    except Exception as e:
+        logger.warning(f"Не удалось инициализировать тестовые данные: {e}")
+    
     logger.info(f"{settings.app_name} запущен!")
     
     yield
@@ -137,6 +157,34 @@ async def health_check():
         "app": settings.app_name,
         "version": settings.version
     }
+
+
+@app.get("/api/test-data")
+async def get_test_data(db: AsyncSession = Depends(get_db)):
+    """Получить тестовые данные (стенограмма)"""
+    test_data = await crud.get_test_data(db)
+    if test_data:
+        return {"content": test_data.content}
+    # Если данных нет, читаем из файла как fallback
+    try:
+        talk_file_path = Path("data/talk.md")
+        if talk_file_path.exists():
+            with open(talk_file_path, "r", encoding="utf-8") as f:
+                content = f.read()
+            return {"content": content}
+    except Exception as e:
+        logger.error(f"Ошибка чтения файла talk.md: {e}")
+    return {"content": ""}
+
+
+@app.post("/api/test-data")
+async def save_test_data(
+    content: str = Body(..., embed=True),
+    db: AsyncSession = Depends(get_db)
+):
+    """Сохранить тестовые данные (стенограмма)"""
+    test_data = await crud.create_or_update_test_data(db, content)
+    return {"success": True, "message": "Данные сохранены", "updated_at": test_data.updated_at}
 
 
 if __name__ == "__main__":

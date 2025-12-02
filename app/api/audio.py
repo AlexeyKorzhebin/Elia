@@ -454,14 +454,25 @@ async def create_mock_transcription(
         if not appointment:
             raise HTTPException(status_code=404, detail="Приём не найден")
         
-        # Читаем текст из файла talk.md
-        talk_file_path = Path("data/talk.md")
-        if not talk_file_path.exists():
-            logger.error("Файл talk.md не найден")
-            raise HTTPException(status_code=500, detail="Файл стенограммы не найден")
+        # Сначала пытаемся получить текст из БД (тестовые данные)
+        transcription_text = None
+        test_data = await crud.get_test_data(db, key="transcription_text")
+        if test_data and test_data.content:
+            transcription_text = test_data.content
+            logger.info("Использованы тестовые данные из БД")
+        else:
+            # Fallback: читаем текст из файла talk.md
+            talk_file_path = Path("data/talk.md")
+            if talk_file_path.exists():
+                with open(talk_file_path, "r", encoding="utf-8") as f:
+                    transcription_text = f.read()
+                logger.info("Использован файл talk.md")
+            else:
+                logger.error("Файл talk.md не найден и нет данных в БД")
+                raise HTTPException(status_code=500, detail="Файл стенограммы не найден")
         
-        with open(talk_file_path, "r", encoding="utf-8") as f:
-            transcription_text = f.read()
+        if not transcription_text:
+            raise HTTPException(status_code=500, detail="Текст стенограммы пуст")
         
         # Проверяем, не создан ли уже аудиофайл
         existing_audio = await crud.get_audio_file_by_appointment(db, appointment_id)

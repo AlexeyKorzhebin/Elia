@@ -54,7 +54,11 @@ RUN mkdir -p static/uploads data logs
 RUN groupadd -r elia && useradd -r -g elia -m elia
 RUN mv /root/.local /home/elia/.local
 RUN chown -R elia:elia /app /home/elia/.local
+
 USER elia
+
+# Примечание: БД elia.db должна монтироваться как volume в docker-compose
+# с правильными правами (chown 999:999 на хосте, где 999 - UID пользователя elia)
 
 # Переменные окружения
 ENV PYTHONPATH=/app

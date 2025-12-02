@@ -170,3 +170,14 @@ class AudioFile(Base):
     
     appointment: Mapped["Appointment"] = relationship(back_populates="audio_file")
 
+
+class TestData(Base):
+    """Тестовые данные (стенограмма для mock-транскрипции)"""
+    __tablename__ = "test_data"
+    
+    id: Mapped[int] = mapped_column(primary_key=True)
+    key: Mapped[str] = mapped_column(String(50), unique=True, default="transcription_text")  # Ключ для идентификации данных
+    content: Mapped[str] = mapped_column(Text)  # Содержимое (текст стенограммы)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+

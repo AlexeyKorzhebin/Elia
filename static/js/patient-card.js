@@ -678,15 +678,34 @@ const PatientCard = {
         
         $('#tonometer-recognition-area').html(html).removeClass('hidden');
         
-        // Инициализация камеры
+        // Проверка поддержки камеры
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            $('#camera-loading').html(`
+                <div class="text-center py-8">
+                    <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="mx-auto mb-3 text-red-500">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                    <p class="text-white text-sm font-medium mb-1">Камера не поддерживается</p>
+                    <p class="text-gray-400 text-xs mb-4">Ваш браузер не поддерживает доступ к камере</p>
+                    <p class="text-gray-500 text-xs">Используйте кнопку "Изображение" для загрузки фото</p>
+                </div>
+            `);
+            $('#capture-photo-btn').addClass('hidden');
+            return;
+        }
+        
+        // Инициализация камеры с более мягкими настройками для HTTP
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({
+            // Пробуем сначала с базовыми настройками (работает на HTTP в некоторых браузерах)
+            let constraints = {
                 video: {
-                    facingMode: 'environment', // Задняя камера
-                    width: { ideal: 1920 },
-                    height: { ideal: 1080 }
+                    facingMode: { ideal: 'environment' }, // Задняя камера, но не обязательно
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 }
                 }
-            });
+            };
+            
+            const stream = await navigator.mediaDevices.getUserMedia(constraints);
             
             const video = document.getElementById('camera-preview');
             video.srcObject = stream;
@@ -697,20 +716,18 @@ const PatientCard = {
                 $('#capture-photo-btn').prop('disabled', false);
             };
             
+            // Обработка ошибок видео
+            video.onerror = (e) => {
+                console.error('Ошибка видео:', e);
+                this.handleCameraError('Ошибка воспроизведения видео');
+            };
+            
             // Сохраняем stream для закрытия
             this.cameraStream = stream;
             
         } catch (error) {
             console.error('Ошибка доступа к камере:', error);
-            $('#camera-loading').html(`
-                <div class="text-center">
-                    <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="mx-auto mb-2 text-red-500">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                    </svg>
-                    <p class="text-white text-sm">Не удалось получить доступ к камере</p>
-                    <p class="text-gray-400 text-xs mt-1">Проверьте разрешения браузера</p>
-                </div>
-            `);
+            this.handleCameraError(error);
         }
         
         // Обработчик закрытия камеры
@@ -722,6 +739,80 @@ const PatientCard = {
         $('#capture-photo-btn').on('click', () => {
             this.capturePhoto();
         });
+    },
+    
+    /**
+     * Обработка ошибок камеры
+     */
+    handleCameraError(error) {
+        let errorMessage = "Не удалось получить доступ к камере";
+        let errorDetails = "Проверьте разрешения браузера";
+        let showInstructions = false;
+        
+        if (error && typeof error === 'object') {
+            if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
+                errorMessage = "Доступ к камере запрещён";
+                errorDetails = "Разрешите доступ к камере в настройках браузера";
+                showInstructions = true;
+            } else if (error.name === 'NotFoundError' || error.name === 'DevicesNotFoundError') {
+                errorMessage = "Камера не найдена";
+                errorDetails = "Убедитесь, что камера подключена и доступна";
+            } else if (error.name === 'NotReadableError' || error.name === 'TrackStartError') {
+                errorMessage = "Камера занята";
+                errorDetails = "Закройте другие приложения, использующие камеру";
+            } else if (error.name === 'OverconstrainedError') {
+                errorMessage = "Камера не поддерживает требуемые параметры";
+                errorDetails = "Попробуйте использовать другую камеру";
+            } else if (error.name === 'SecurityError' || error.message?.includes('secure context')) {
+                errorMessage = "Требуется HTTPS соединение";
+                errorDetails = "Для работы камеры необходим защищённый протокол (HTTPS)";
+                showInstructions = true;
+            }
+        } else if (typeof error === 'string') {
+            errorMessage = error;
+        }
+        
+        const isHttp = window.location.protocol === 'http:';
+        const instructionsHtml = showInstructions && isHttp ? `
+            <div class="mt-4 p-3 bg-yellow-900 bg-opacity-30 rounded-lg text-left">
+                <p class="text-yellow-200 text-xs font-medium mb-2">Для работы камеры на HTTP:</p>
+                <ul class="text-yellow-300 text-xs space-y-1 list-disc list-inside">
+                    <li>Chrome: chrome://flags → "Insecure origins treated as secure" → добавьте ${window.location.origin}</li>
+                    <li>Firefox: about:config → media.getusermedia.insecure.enabled = true</li>
+                    <li>Или используйте кнопку "Изображение" для загрузки фото</li>
+                </ul>
+            </div>
+        ` : '';
+        
+        $('#camera-loading').html(`
+            <div class="text-center py-8">
+                <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="mx-auto mb-3 text-red-500">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
+                <p class="text-white text-sm font-medium mb-1">${errorMessage}</p>
+                <p class="text-gray-400 text-xs mb-4">${errorDetails}</p>
+                ${instructionsHtml}
+                <button id="retry-camera-btn" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm transition-colors mt-2">
+                    Повторить попытку
+                </button>
+            </div>
+        `);
+        
+        $('#capture-photo-btn').addClass('hidden');
+        
+        // Обработчик повторной попытки
+        $('#retry-camera-btn').on('click', () => {
+            this.closeCameraPreview();
+            setTimeout(() => {
+                this.openCameraPreview();
+            }, 300);
+        });
+        
+        // Останавливаем stream при ошибке
+        if (this.cameraStream) {
+            this.cameraStream.getTracks().forEach(track => track.stop());
+            this.cameraStream = null;
+        }
     },
     
     /**

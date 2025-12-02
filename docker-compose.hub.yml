@@ -10,6 +10,7 @@ services:
       - ./data:/app/data
       - ./static/uploads:/app/static/uploads
       - ./logs:/app/logs
+      - ./elia.db:/app/elia.db
       - ./.env:/app/.env:ro
     restart: unless-stopped
     healthcheck:
@@ -18,20 +19,3 @@ services:
       timeout: 10s
       retries: 3
       start_period: 10s
-
-  # Опциональный PostgreSQL (раскомментируйте для использования)
-  # postgres:
-  #   image: postgres:15-alpine
-  #   container_name: elia-postgres
-  #   environment:
-  #     - POSTGRES_USER=elia
-  #     - POSTGRES_PASSWORD=elia_password
-  #     - POSTGRES_DB=elia
-  #   volumes:
-  #     - postgres_data:/var/lib/postgresql/data
-  #   ports:
-  #     - "5432:5432"
-  #   restart: unless-stopped
-
-# volumes:
-#   postgres_data:
