@@ -101,6 +101,15 @@ class HealthIndicator(Base):
     bmi: Mapped[Optional[float]] = mapped_column(Float, nullable=True)  # кг/м²
     heart_rate: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)  # уд/мин
     
+    # Показатели давления
+    systolic_pressure: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)  # мм рт. ст.
+    diastolic_pressure: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)  # мм рт. ст.
+    pulse: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)  # уд/мин (с тонометра)
+    
+    # Источник данных давления (manual/photo)
+    bp_source: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
+    bp_updated_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+    
     patient: Mapped["Patient"] = relationship(back_populates="health_indicators")
 
 

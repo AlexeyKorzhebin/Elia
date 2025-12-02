@@ -32,6 +32,13 @@ class HealthIndicatorSchema(BaseModel):
     cholesterol: Optional[float] = None
     bmi: Optional[float] = None
     heart_rate: Optional[int] = None
+    
+    # Показатели давления
+    systolic_pressure: Optional[int] = None
+    diastolic_pressure: Optional[int] = None
+    pulse: Optional[int] = None
+    bp_source: Optional[str] = None
+    bp_updated_at: Optional[datetime] = None
 
 
 class PatientBaseSchema(BaseModel):

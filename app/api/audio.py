@@ -436,3 +436,70 @@ async def delete_audio_by_appointment(
     
     return {"success": True, "message": "Аудиофайл успешно удалён"}
 
+
+@router.post("/mock-transcription")
+async def create_mock_transcription(
+    appointment_id: int = Query(..., description="ID приёма"),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Имитация транскрибации - загрузка текста из talk.md
+    Для демо-презентации: создаёт иллюзию реальной обработки аудио
+    """
+    logger.info(f"Запрос mock-транскрипции для приёма: appointment_id={appointment_id}")
+    
+    try:
+        # Проверяем, существует ли приём
+        appointment = await crud.get_appointment(db, appointment_id)
+        if not appointment:
+            raise HTTPException(status_code=404, detail="Приём не найден")
+        
+        # Читаем текст из файла talk.md
+        talk_file_path = Path("data/talk.md")
+        if not talk_file_path.exists():
+            logger.error("Файл talk.md не найден")
+            raise HTTPException(status_code=500, detail="Файл стенограммы не найден")
+        
+        with open(talk_file_path, "r", encoding="utf-8") as f:
+            transcription_text = f.read()
+        
+        # Проверяем, не создан ли уже аудиофайл
+        existing_audio = await crud.get_audio_file_by_appointment(db, appointment_id)
+        
+        if not existing_audio:
+            # Создаём "виртуальный" аудиофайл
+            audio = await crud.create_audio_file(
+                db,
+                appointment_id=appointment_id,
+                filename="mock_recording.wav",
+                filepath="",
+                file_size=len(transcription_text.encode('utf-8')),
+                mime_type="audio/wav"
+            )
+        else:
+            audio = existing_audio
+        
+        # Обновляем транскрипцию
+        audio = await crud.update_transcription(
+            db,
+            audio.id,
+            TranscriptionStatus.COMPLETED,
+            text=transcription_text
+        )
+        
+        logger.info(f"Mock-транскрипция успешно создана: appointment_id={appointment_id}")
+        
+        return TranscriptionResponse(
+            success=True,
+            message="Транскрибация успешно завершена",
+            transcription_status=audio.transcription_status,
+            transcription_text=audio.transcription_text,
+            transcribed_at=audio.transcribed_at
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Ошибка mock-транскрипции: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Ошибка транскрибации: {str(e)}")
+

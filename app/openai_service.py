@@ -168,6 +168,105 @@ class OpenAIService:
             raise
 
 
+    async def recognize_tonometer_reading(self, image_base64: str) -> Dict[str, Any]:
+        """
+        Распознавание показаний тонометра с фотографии через OpenAI Vision
+        
+        Args:
+            image_base64: Изображение в формате base64
+        
+        Returns:
+            Словарь с полями: systolic, diastolic, pulse, confidence, error
+        """
+        if not self.client:
+            raise ValueError("OpenAI API key не настроен. Проверьте файл .env")
+        
+        system_prompt = """Ты - эксперт по распознаванию медицинских показателей с изображений.
+Твоя задача - проанализировать фотографию экрана тонометра и извлечь показания.
+
+Верни ответ СТРОГО в формате JSON:
+{
+  "success": true/false,
+  "systolic": число или null (верхнее давление в мм рт. ст.),
+  "diastolic": число или null (нижнее давление в мм рт. ст.),
+  "pulse": число или null (пульс в уд/мин),
+  "confidence": "high" / "medium" / "low",
+  "error": null или "описание проблемы"
+}
+
+Правила:
+1. Верхнее давление обычно крупнее и отображается сверху (80-250 мм рт. ст.)
+2. Нижнее давление меньше и отображается ниже (40-150 мм рт. ст.)
+3. Пульс отображается отдельным числом, часто с символом сердца
+4. Если не можешь уверенно распознать - укажи confidence: "low"
+5. Если изображение не похоже на тонометр - верни success: false"""
+
+        try:
+            logger.info("Запрос распознавания показаний тонометра")
+            
+            # Формируем запрос с изображением
+            response = await self.client.chat.completions.create(
+                model="gpt-4o",  # Используем модель с поддержкой Vision
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {
+                        "role": "user",
+                        "content": [
+                            {
+                                "type": "text",
+                                "text": "Проанализируй это изображение тонометра и извлеки показания давления и пульса. Верни результат в формате JSON."
+                            },
+                            {
+                                "type": "image_url",
+                                "image_url": {
+                                    "url": f"data:image/jpeg;base64,{image_base64}",
+                                    "detail": "high"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                max_tokens=500,
+                temperature=0.1
+            )
+            
+            content = response.choices[0].message.content.strip()
+            
+            # Извлекаем JSON из ответа
+            # Иногда GPT оборачивает в markdown
+            if "```json" in content:
+                content = content.split("```json")[1].split("```")[0].strip()
+            elif "```" in content:
+                content = content.split("```")[1].split("```")[0].strip()
+            
+            data = json.loads(content)
+            
+            logger.info(f"Распознаны показания: {data}")
+            
+            return data
+            
+        except json.JSONDecodeError as e:
+            logger.error(f"Ошибка парсинга JSON ответа: {str(e)}")
+            return {
+                "success": False,
+                "systolic": None,
+                "diastolic": None,
+                "pulse": None,
+                "confidence": None,
+                "error": "Не удалось распознать показания"
+            }
+        except Exception as e:
+            logger.error(f"Ошибка при распознавании показаний: {str(e)}")
+            return {
+                "success": False,
+                "systolic": None,
+                "diastolic": None,
+                "pulse": None,
+                "confidence": None,
+                "error": str(e)
+            }
+
+
 # Singleton экземпляр
 openai_service = OpenAIService()
 

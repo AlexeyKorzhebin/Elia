@@ -216,3 +216,49 @@ async def delete_audio_file(db: AsyncSession, audio_id: int) -> None:
     await db.delete(audio)
     await db.commit()
 
+
+# === Health Indicators CRUD ===
+
+async def get_health_indicators(db: AsyncSession, patient_id: int) -> Optional[HealthIndicator]:
+    """Получить показатели здоровья пациента"""
+    result = await db.execute(
+        select(HealthIndicator).where(HealthIndicator.patient_id == patient_id)
+    )
+    return result.scalar_one_or_none()
+
+
+async def update_blood_pressure(
+    db: AsyncSession,
+    patient_id: int,
+    systolic: int,
+    diastolic: int,
+    pulse: Optional[int] = None,
+    source: str = "manual"
+) -> HealthIndicator:
+    """Обновить показатели давления пациента"""
+    indicators = await get_health_indicators(db, patient_id)
+    
+    if not indicators:
+        # Создаём новую запись
+        indicators = HealthIndicator(
+            patient_id=patient_id,
+            systolic_pressure=systolic,
+            diastolic_pressure=diastolic,
+            pulse=pulse,
+            bp_source=source,
+            bp_updated_at=datetime.utcnow()
+        )
+        db.add(indicators)
+    else:
+        # Обновляем существующую
+        indicators.systolic_pressure = systolic
+        indicators.diastolic_pressure = diastolic
+        if pulse is not None:
+            indicators.pulse = pulse
+        indicators.bp_source = source
+        indicators.bp_updated_at = datetime.utcnow()
+    
+    await db.commit()
+    await db.refresh(indicators)
+    return indicators
+
