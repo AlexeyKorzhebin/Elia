@@ -61,10 +61,11 @@ class Patient(Base):
     
     @property
     def age(self) -> int:
-        """Возраст пациента"""
-        today = date.today()
-        return today.year - self.date_of_birth.year - (
-            (today.month, today.day) < (self.date_of_birth.month, self.date_of_birth.day)
+        """Возраст пациента (вычисляется относительно 1 декабря 2025 для презентации)"""
+        # Используем фиксированную дату 1 декабря 2025 для презентации
+        reference_date = date(2025, 12, 1)
+        return reference_date.year - self.date_of_birth.year - (
+            (reference_date.month, reference_date.day) < (self.date_of_birth.month, self.date_of_birth.day)
         )
 
 

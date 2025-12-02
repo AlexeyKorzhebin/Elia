@@ -60,6 +60,34 @@
     color: var(--elia-dark);
 }
 
+/* Фиолетовая подсветка последнего приема */
+.appointment-card.latest-appointment {
+    background: var(--elia-lavender) !important;
+    border-color: #B794F6 !important;
+    border-width: 2px !important;
+    box-shadow: 0 4px 12px rgba(208, 186, 255, 0.4) !important;
+}
+
+.appointment-card.latest-appointment h3 {
+    color: var(--elia-dark) !important;
+}
+
+.appointment-card.latest-appointment .flex {
+    color: var(--elia-dark) !important;
+}
+
+.appointment-card.latest-appointment .badge {
+    background: rgba(255, 255, 255, 0.7) !important;
+    color: var(--elia-dark) !important;
+}
+
+/* Если latest-appointment также active, latest-appointment имеет приоритет */
+.appointment-card.latest-appointment.active {
+    background: var(--elia-lavender) !important;
+    border-color: #B794F6 !important;
+    border-width: 2px !important;
+}
+
 /* Badge styles */
 .badge {
     display: inline-block;

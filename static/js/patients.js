@@ -59,12 +59,28 @@ const Patients = {
             return;
         }
         
+        // Находим последний прием (самый поздний по дате и времени)
+        let latestAppointment = null;
+        let latestTimestamp = null;
+        
+        for (const appointment of this.appointments) {
+            // Преобразуем дату и время в абсолютное значение (timestamp)
+            // Формат: appointment_date = "YYYY-MM-DD", appointment_time_start = "HH:MM"
+            const dateTimeString = `${appointment.appointment_date}T${appointment.appointment_time_start}:00`;
+            const timestamp = new Date(dateTimeString).getTime();
+            
+            if (!latestTimestamp || timestamp > latestTimestamp) {
+                latestTimestamp = timestamp;
+                latestAppointment = appointment;
+            }
+        }
+        
         // Группируем приёмы по датам
         const groupedByDate = Utils.groupBy(this.appointments, 'appointment_date');
         
         let html = '';
         for (const [date, appointments] of Object.entries(groupedByDate)) {
-            html += this.renderDateGroup(date, appointments);
+            html += this.renderDateGroup(date, appointments, latestAppointment);
         }
         
         container.html(html);
@@ -79,12 +95,13 @@ const Patients = {
     /**
      * Отрендерить группу приёмов по дате
      */
-    renderDateGroup(date, appointments) {
+    renderDateGroup(date, appointments, latestAppointment) {
         const formattedDate = Utils.formatDate(date);
         
         let cardsHtml = '';
         for (const appointment of appointments) {
-            cardsHtml += this.renderAppointmentCard(appointment);
+            const isLatest = latestAppointment && appointment.id === latestAppointment.id;
+            cardsHtml += this.renderAppointmentCard(appointment, isLatest);
         }
         
         return `
@@ -100,13 +117,14 @@ const Patients = {
     /**
      * Отрендерить карточку приёма
      */
-    renderAppointmentCard(appointment) {
+    renderAppointmentCard(appointment, isLatest = false) {
         const patient = appointment.patient;
         const badgeClass = Utils.getStatusBadgeClass(appointment.status);
         const activeClass = appointment.is_active ? 'active' : '';
+        const latestClass = isLatest ? 'latest-appointment' : '';
         
         return `
-            <div class="appointment-card ${activeClass} flex-shrink-0 w-64 bg-white rounded-lg shadow-sm border border-gray-200 p-4 relative" 
+            <div class="appointment-card ${activeClass} ${latestClass} flex-shrink-0 w-64 bg-white rounded-lg shadow-sm border border-gray-200 p-4 relative" 
                  data-appointment-id="${appointment.id}">
                 <!-- Меню -->
                 <button class="absolute top-3 right-3 text-gray-400 hover:text-gray-600">
