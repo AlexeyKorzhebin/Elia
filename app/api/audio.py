@@ -7,6 +7,7 @@ from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Query
 from fastapi.responses import FileResponse
 from sqlalchemy.ext.asyncio import AsyncSession
+from pydantic import BaseModel
 
 from app.database import get_db
 from app import crud
@@ -105,10 +106,15 @@ async def upload_audio_file(
     )
 
 
+class TranscriptionUpdateRequest(BaseModel):
+    """Схема запроса на обновление транскрипции"""
+    transcription_text: str
+
+
 @router.put("/{audio_id}/transcription")
 async def update_transcription_text(
     audio_id: int,
-    transcription_text: str = Query(..., description="Обновлённый текст транскрипции"),
+    request: TranscriptionUpdateRequest,
     db: AsyncSession = Depends(get_db)
 ):
     """Обновить текст транскрипции"""
@@ -123,10 +129,10 @@ async def update_transcription_text(
         db,
         audio_id,
         TranscriptionStatus.COMPLETED,
-        text=transcription_text
+        text=request.transcription_text
     )
     
-    logger.info(f"Транскрипция обновлена: audio_id={audio_id}, text_length={len(transcription_text)}")
+    logger.info(f"Транскрипция обновлена: audio_id={audio_id}, text_length={len(request.transcription_text)}")
     
     return TranscriptionResponse(
         success=True,

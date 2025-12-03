@@ -34,6 +34,8 @@ IMAGE_NAME="elia-platform"
 VERSION="1.0.0"
 FULL_IMAGE_NAME="${DOCKER_USERNAME}/${IMAGE_NAME}"
 BUILD_ARGS=""
+PLATFORMS="linux/amd64,linux/arm64"  # Поддержка обеих архитектур
+USE_BUILDX=true  # Использовать buildx для multi-platform сборки
 
 # Функция помощи
 show_help() {
@@ -44,6 +46,8 @@ show_help() {
     echo "  -n, --name NAME          Имя образа (по умолчанию: elia-platform)"
     echo "  -v, --version VERSION   Версия образа (по умолчанию: 1.0.0)"
     echo "  -t, --tag TAG            Дополнительный тег"
+    echo "  --platform PLATFORMS     Платформы для сборки (по умолчанию: linux/amd64,linux/arm64)"
+    echo "  --no-buildx              Использовать обычный docker build вместо buildx"
     echo "  --no-cache               Сборка без кэша"
     echo "  --push                   Загрузить в Docker Hub"
     echo "  --login                  Войти в Docker Hub"
@@ -61,6 +65,7 @@ PUSH=false
 LOGIN=false
 NO_CACHE=""
 TAGS=()
+NO_BUILDX=false
 
 while [[ $# -gt 0 ]]; do
     case $1 in
@@ -81,6 +86,15 @@ while [[ $# -gt 0 ]]; do
         -t|--tag)
             TAGS+=("$2")
             shift 2
+            ;;
+        --platform)
+            PLATFORMS="$2"
+            shift 2
+            ;;
+        --no-buildx)
+            NO_BUILDX=true
+            USE_BUILDX=false
+            shift
             ;;
         --no-cache)
             NO_CACHE="--no-cache"
@@ -148,32 +162,72 @@ if [[ "$VERSION" != "latest" ]]; then
     TAGS+=("latest")
 fi
 
-# Сборка образа
-log "Сборка Docker образа..."
-BUILD_CMD="docker build -f Dockerfile.production ${NO_CACHE}"
-
-# Добавляем теги
-for tag in "${TAGS[@]}"; do
-    BUILD_CMD="${BUILD_CMD} -t ${FULL_IMAGE_NAME}:${tag}"
-done
-
-BUILD_CMD="${BUILD_CMD} ."
-
-log "Выполняю: ${BUILD_CMD}"
-eval $BUILD_CMD
-
-if [[ $? -eq 0 ]]; then
-    log "✅ Образ успешно собран!"
+# Проверка и настройка buildx для multi-platform сборки
+if [[ "$USE_BUILDX" == true && "$PUSH" == true ]]; then
+    log "Настройка Docker buildx для multi-platform сборки..."
+    
+    # Создаём builder если его нет
+    if ! docker buildx ls | grep -q "multiplatform-builder"; then
+        log "Создание buildx builder..."
+        docker buildx create --name multiplatform-builder --use --bootstrap 2>/dev/null || true
+    else
+        log "Использование существующего buildx builder..."
+        docker buildx use multiplatform-builder 2>/dev/null || true
+    fi
+    
+    log "Сборка Docker образа для платформ: ${PLATFORMS}..."
+    BUILD_CMD="docker buildx build --platform ${PLATFORMS} -f Dockerfile.production ${NO_CACHE}"
+    
+    # Добавляем теги
+    for tag in "${TAGS[@]}"; do
+        BUILD_CMD="${BUILD_CMD} -t ${FULL_IMAGE_NAME}:${tag}"
+    done
+    
+    # Для buildx с push нужно указать --push
+    if [[ "$PUSH" == true ]]; then
+        BUILD_CMD="${BUILD_CMD} --push"
+    fi
+    
+    BUILD_CMD="${BUILD_CMD} ."
+    
+    log "Выполняю: ${BUILD_CMD}"
+    eval $BUILD_CMD
+    
+    if [[ $? -eq 0 ]]; then
+        log "✅ Образ успешно собран для всех платформ!"
+    else
+        error "❌ Ошибка сборки образа"
+    fi
 else
-    error "❌ Ошибка сборки образа"
+    # Обычная сборка (локальная или без buildx)
+    log "Сборка Docker образа..."
+    BUILD_CMD="docker build -f Dockerfile.production ${NO_CACHE}"
+    
+    # Добавляем теги
+    for tag in "${TAGS[@]}"; do
+        BUILD_CMD="${BUILD_CMD} -t ${FULL_IMAGE_NAME}:${tag}"
+    done
+    
+    BUILD_CMD="${BUILD_CMD} ."
+    
+    log "Выполняю: ${BUILD_CMD}"
+    eval $BUILD_CMD
+    
+    if [[ $? -eq 0 ]]; then
+        log "✅ Образ успешно собран!"
+    else
+        error "❌ Ошибка сборки образа"
+    fi
 fi
 
-# Показываем информацию об образе
-log "Информация об образе:"
-docker images | grep "${FULL_IMAGE_NAME}"
+# Показываем информацию об образе (только если не использовали buildx с push)
+if [[ "$USE_BUILDX" != true || "$PUSH" != true ]]; then
+    log "Информация об образе:"
+    docker images | grep "${FULL_IMAGE_NAME}"
+fi
 
-# Загрузка в Docker Hub
-if [[ "$PUSH" == true ]]; then
+# Загрузка в Docker Hub (только если не использовали buildx с --push)
+if [[ "$PUSH" == true && "$USE_BUILDX" != true ]]; then
     log "Загрузка образа в Docker Hub..."
     
     for tag in "${TAGS[@]}"; do
@@ -189,6 +243,10 @@ if [[ "$PUSH" == true ]]; then
     
     log "🎉 Все теги успешно загружены в Docker Hub!"
     log "Образ доступен по адресу: https://hub.docker.com/r/${FULL_IMAGE_NAME}"
+elif [[ "$PUSH" == true && "$USE_BUILDX" == true ]]; then
+    log "🎉 Образ успешно собран и загружен в Docker Hub для всех платформ!"
+    log "Образ доступен по адресу: https://hub.docker.com/r/${FULL_IMAGE_NAME}"
+    log "Поддерживаемые платформы: ${PLATFORMS}"
 else
     log "Образ собран локально. Для загрузки в Docker Hub используйте --push"
 fi

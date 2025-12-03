@@ -478,8 +478,12 @@ const AudioHandler = {
         `);
         
         try {
-            const response = await fetch(`/api/audio/${audioId}/transcription?transcription_text=${encodeURIComponent(text)}`, {
-                method: 'PUT'
+            const response = await fetch(`/api/audio/${audioId}/transcription`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ transcription_text: text })
             });
             
             if (!response.ok) {

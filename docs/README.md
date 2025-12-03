@@ -23,6 +23,7 @@
 | [DOCKER_QUICKSTART.md](DOCKER_QUICKSTART.md) | Быстрое руководство по Docker |
 | [DOCKER_GUIDE.md](DOCKER_GUIDE.md) | Полное руководство по Docker |
 | [DOCKER_README.md](DOCKER_README.md) | Дополнительная информация по Docker |
+| [DOCKER_BUILD.md](DOCKER_BUILD.md) | Сборка Docker образа (multi-platform) |
 | [КАК_СОБРАТЬ_DOCKER.md](КАК_СОБРАТЬ_DOCKER.md) | Инструкция по сборке Docker образа |
 | [NGINX_DEPLOYMENT.md](NGINX_DEPLOYMENT.md) | Настройка Nginx для Elia Platform |
 

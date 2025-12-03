@@ -2,9 +2,10 @@
 
 ## ✅ Образ собран и готов к публикации
 
-**Образ:** `alexeykorzhebin/elia-platform`
+**Образ:** `alekseykorzhebin/elia-platform`
 **Теги:** `1.0.0`, `latest`
-**Размер:** ~200MB (оптимизированный multi-stage build)
+**Размер:** ~200-300MB (оптимизированный multi-stage build)
+**Платформы:** `linux/amd64`, `linux/arm64` (multi-platform образ)
 
 ---
 
@@ -161,23 +162,32 @@ services:
 ### Вход в Docker Hub:
 ```bash
 docker login
-# Введите username: alexeykorzhebin
+# Введите username: alekseykorzhebin
 # Введите password: [ваш пароль]
 ```
 
-### Загрузка образа:
+### Автоматическая сборка и загрузка (рекомендуется):
+```bash
+# Собрать для всех платформ (amd64 + arm64) и загрузить
+./scripts/build-and-push.sh --push
+
+# Собрать только для amd64 (для серверов)
+./scripts/build-and-push.sh --platform linux/amd64 --push
+
+# Собрать без кэша
+./scripts/build-and-push.sh --no-cache --push
+```
+
+### Ручная загрузка образа:
 ```bash
 # Загрузить тег latest
-docker push alexeykorzhebin/elia-platform:latest
+docker push alekseykorzhebin/elia-platform:latest
 
 # Загрузить тег версии
-docker push alexeykorzhebin/elia-platform:1.0.0
+docker push alekseykorzhebin/elia-platform:1.0.0
 ```
 
-### Автоматическая загрузка через скрипт:
-```bash
-./scripts/build-and-push.sh --push
-```
+**Примечание:** Для multi-platform образов используйте `docker buildx build --push` или скрипт `build-and-push.sh`.
 
 ---
 

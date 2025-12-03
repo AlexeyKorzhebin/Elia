@@ -1,20 +1,19 @@
 services:
   elia-app:
-    image: alekseykorzhebin/elia-platform:latest
+    image: alekseykorzhebin/elia-platform:1.0.0
     container_name: elia-platform
     ports:
-      - "127.0.0.1:8000:80"
+      - "${PORT:-8000}:8000"
     env_file:
       - .env
     volumes:
       - ./data:/app/data
       - ./static/uploads:/app/static/uploads
       - ./logs:/app/logs
-      - ./elia.db:/app/elia.db
       - ./.env:/app/.env:ro
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
       timeout: 10s
       retries: 3
