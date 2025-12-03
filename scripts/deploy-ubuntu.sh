@@ -418,16 +418,17 @@ log "Обновление docker-compose.yml для использования �
 cat > docker-compose.yml << 'EOF'
 services:
   elia-app:
-    image: alexeykorzhebin/elia-platform:latest
+    image: alekseykorzhebin/elia-platform:latest
     container_name: elia-platform
     ports:
-      - "${PORT:-80}:80"
+      - "127.0.0.1:8000:80"
     env_file:
       - .env
     volumes:
       - ./data:/app/data
       - ./static/uploads:/app/static/uploads
       - ./logs:/app/logs
+      - ./elia.db:/app/elia.db
       - ./.env:/app/.env:ro
     restart: unless-stopped
     healthcheck:
@@ -447,19 +448,18 @@ if [[ "$INSTALL_NGINX" == true ]]; then
     log "Настройка Nginx..."
     sudo tee /etc/nginx/sites-available/elia-platform > /dev/null << EOF
 server {
-    listen 80;
     server_name $DOMAIN;
-
+    
     # Логи
     access_log /var/log/nginx/elia-access.log;
     error_log /var/log/nginx/elia-error.log;
-
+    
     # Максимальный размер загружаемых файлов
     client_max_body_size 50M;
-
-    # Проксирование на Docker контейнер
+    
+    # Проксирование на Docker контейнер (порт 8000)
     location / {
-        proxy_pass http://127.0.0.1:80;
+        proxy_pass http://127.0.0.1:8000;
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
@@ -471,18 +471,7 @@ server {
         proxy_read_timeout 60s;
     }
 
-    # Статические файлы
-    location /static/ {
-        alias $PROJECT_DIR/static/;
-        expires 1y;
-        add_header Cache-Control "public, immutable";
-    }
-
-    # Загруженные файлы
-    location /uploads/ {
-        alias $PROJECT_DIR/static/uploads/;
-        expires 1d;
-    }
+    listen 80;
 }
 EOF
 
@@ -505,11 +494,19 @@ if [[ "$INSTALL_SSL" == true ]]; then
     log "Настройка SSL сертификата..."
     sudo apt install -y certbot python3-certbot-nginx
     
-    # Получение сертификата
-    sudo certbot --nginx -d $DOMAIN --email $EMAIL --agree-tos --non-interactive
+    # Останавливаем контейнер временно для получения сертификата
+    log "Временная остановка контейнера для получения SSL сертификата..."
+    sudo systemctl stop elia-platform 2>/dev/null || true
     
-    # Настройка автоматического обновления
-    (crontab -l 2>/dev/null; echo "0 12 * * * /usr/bin/certbot renew --quiet") | crontab -
+    # Получение сертификата с автоматическим редиректом
+    sudo certbot --nginx -d $DOMAIN --email $EMAIL --agree-tos --non-interactive --redirect
+    
+    # Автоматическое обновление настроено через certbot.timer
+    log "Автоматическое обновление сертификата настроено через systemd timer"
+    
+    # Запускаем контейнер обратно
+    log "Запуск контейнера после получения SSL сертификата..."
+    sudo systemctl start elia-platform
     
     log "SSL сертификат настроен"
 fi
@@ -541,7 +538,7 @@ sudo systemctl enable elia-platform
 
 # Загрузка и запуск приложения
 log "Загрузка образа из Docker Hub..."
-docker pull alexeykorzhebin/elia-platform:latest
+docker pull alekseykorzhebin/elia-platform:latest
 
 log "Запуск приложения..."
 sudo systemctl start elia-platform
@@ -627,15 +624,19 @@ else
 fi
 
 # Проверка доступности
-if curl -s -o /dev/null -w "%{http_code}" http://localhost:80/health | grep -q "200"; then
-    log "✅ Приложение отвечает на health check"
+if curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:8000/health | grep -q "200"; then
+    log "✅ Приложение отвечает на health check (порт 8000)"
 else
     warn "❌ Приложение не отвечает на health check"
 fi
 
 if [[ "$INSTALL_NGINX" == true ]]; then
-    if curl -s -o /dev/null -w "%{http_code}" http://$DOMAIN | grep -q "200"; then
-        log "✅ Сайт доступен через Nginx"
+    PROTOCOL="http"
+    if [[ "$INSTALL_SSL" == true ]]; then
+        PROTOCOL="https"
+    fi
+    if curl -s -o /dev/null -w "%{http_code}" $PROTOCOL://$DOMAIN/health | grep -q "200"; then
+        log "✅ Сайт доступен через Nginx ($PROTOCOL://$DOMAIN)"
     else
         warn "❌ Сайт недоступен через Nginx"
     fi
@@ -659,10 +660,11 @@ echo ""
 echo "🌐 Доступ к приложению:"
 if [[ "$INSTALL_SSL" == true ]]; then
     echo "  https://$DOMAIN"
+    echo "  https://$DOMAIN/health (health check)"
 else
     echo "  http://$DOMAIN"
+    echo "  http://$DOMAIN/health (health check)"
 fi
-echo "  http://$DOMAIN/health (health check)"
 echo ""
 echo "📚 Документация:"
 echo "  /opt/elia-platform/UBUNTU_DEPLOYMENT.md"
