@@ -29,58 +29,82 @@
 
 ## ✅ Правильное решение: Настройка HTTPS
 
-### Вариант 1: Использование домена с Let's Encrypt
+### Вариант 1: Использование домена с Let's Encrypt ✅ (Настроено для elia.su)
 
-1. **Настройте DNS:**
+**Статус:** HTTPS успешно настроен для домена `elia.su`
+
+1. **DNS настроен:**
    ```
-   A запись: elia.yourdomain.com → 43.245.224.114
+   A запись: elia.su → 43.245.224.114 ✅
    ```
 
-2. **Установите Nginx и Certbot:**
+2. **Nginx и Certbot установлены:**
    ```bash
-   ssh root@43.245.224.114
-   
-   # Установка Nginx
+   # Установка выполнена:
    apt update
    apt install -y nginx certbot python3-certbot-nginx
-   
-   # Создание конфигурации Nginx
-   cat > /etc/nginx/sites-available/elia-platform << 'EOF'
-   server {
-       listen 80;
-       server_name elia.yourdomain.com;  # Замените на ваш домен
-       
-       location / {
-           proxy_pass http://127.0.0.1:80;
-           proxy_set_header Host $host;
-           proxy_set_header X-Real-IP $remote_addr;
-           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-           proxy_set_header X-Forwarded-Proto $scheme;
-       }
-   }
-   EOF
-   
-   # Активация конфигурации
-   ln -s /etc/nginx/sites-available/elia-platform /etc/nginx/sites-enabled/
-   rm -f /etc/nginx/sites-enabled/default
-   nginx -t
-   systemctl restart nginx
-   
-   # Получение SSL сертификата
-   certbot --nginx -d elia.yourdomain.com --email your@email.com --agree-tos --non-interactive
-   
-   # Автоматическое обновление сертификата
-   (crontab -l 2>/dev/null; echo "0 12 * * * /usr/bin/certbot renew --quiet") | crontab -
    ```
 
-3. **Обновите docker-compose.yml:**
-   ```yaml
-   services:
-     elia-app:
-       # ... существующая конфигурация ...
-       ports:
-         - "127.0.0.1:80:80"  # Только локальный доступ
+3. **Конфигурация Nginx:**
+   ```bash
+   # Конфигурация находится в: /etc/nginx/sites-enabled/elia-platform
+   # Проксирование на Docker контейнер: http://127.0.0.1:8000
    ```
+
+4. **SSL сертификат получен:**
+   ```bash
+   # Сертификат: /etc/letsencrypt/live/elia.su/
+   # Действителен до: 2026-03-03
+   # Автоматическое обновление: Настроено через certbot.timer
+   ```
+
+5. **Docker контейнер настроен:**
+   ```yaml
+   # docker-compose.yml обновлён:
+   ports:
+     - "127.0.0.1:8000:80"  # Только локальный доступ
+   ```
+
+**Доступ:**
+- ✅ HTTPS: https://elia.su
+- ✅ HTTP: http://elia.su (автоматический редирект на HTTPS)
+- ✅ Камера: Работает через HTTPS без дополнительных настроек!
+
+**Для настройки на другом домене:**
+```bash
+ssh root@43.245.224.114
+
+# Установка Nginx и Certbot
+apt update
+apt install -y nginx certbot python3-certbot-nginx
+
+# Создание конфигурации Nginx
+cat > /etc/nginx/sites-available/elia-platform << 'EOF'
+server {
+    listen 80;
+    server_name your-domain.com;
+    
+    location / {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+EOF
+
+# Активация конфигурации
+ln -s /etc/nginx/sites-available/elia-platform /etc/nginx/sites-enabled/
+rm -f /etc/nginx/sites-enabled/default
+nginx -t
+systemctl start nginx
+
+# Получение SSL сертификата
+certbot --nginx -d your-domain.com --email your@email.com --agree-tos --non-interactive --redirect
+
+# Автоматическое обновление настроено автоматически через certbot.timer
+```
 
 ### Вариант 2: Использование Cloudflare (бесплатно)
 
