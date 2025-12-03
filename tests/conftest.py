@@ -1,6 +1,7 @@
 """Конфигурация pytest и фикстуры"""
 import pytest
 import asyncio
+import os
 from pathlib import Path
 from typing import AsyncGenerator
 from httpx import AsyncClient
@@ -8,12 +9,14 @@ from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sess
 
 from app.main import app
 from app.database import Base, get_db
-from app.models import Patient, Appointment, GenderEnum, AppointmentStatus
+from app.models import Patient, Appointment, GenderEnum, AppointmentStatus, MedicalReport, AudioFile
 from datetime import date
 
 
-# Тестовая база данных в памяти
-TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
+# Тестовая база данных - используем отдельный файл
+# Путь можно переопределить через переменную окружения TEST_DATABASE_PATH
+TEST_DB_PATH = os.getenv("TEST_DATABASE_PATH", "elia-test.db")
+TEST_DATABASE_URL = f"sqlite+aiosqlite:///{TEST_DB_PATH}"
 
 test_engine = create_async_engine(
     TEST_DATABASE_URL,
@@ -36,25 +39,66 @@ def event_loop():
     loop.close()
 
 
+# Глобальная переменная для хранения текущей сессии (для dependency override)
+_current_session: AsyncSession | None = None
+
+
 async def override_get_db() -> AsyncGenerator[AsyncSession, None]:
-    """Override для dependency get_db"""
-    async with test_async_session() as session:
-        yield session
+    """Override для dependency get_db - использует текущую сессию из фикстуры"""
+    global _current_session
+    if _current_session is None:
+        async with test_async_session() as session:
+            _current_session = session
+            yield session
+            _current_session = None
+    else:
+        yield _current_session
+
+
+@pytest.fixture(scope="session", autouse=True)
+async def setup_test_db():
+    """Настройка тестовой БД перед всеми тестами"""
+    # Проверяем, нужно ли очищать БД перед тестами
+    # Можно установить CLEAN_TEST_DB=1 для очистки перед запуском
+    clean_before = os.getenv("CLEAN_TEST_DB", "0") == "1"
+    
+    test_db_path = Path(TEST_DB_PATH)
+    
+    # Удаляем старую тестовую БД если нужно
+    if clean_before and test_db_path.exists():
+        test_db_path.unlink()
+        print(f"🗑️  Удалена старая тестовая БД: {TEST_DB_PATH}")
+    
+    # Создаём таблицы
+    async with test_engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    
+    print(f"✅ Тестовая БД инициализирована: {TEST_DB_PATH}")
+    
+    yield
+    
+    # Очищаем БД после всех тестов (опционально)
+    # Можно установить CLEAN_TEST_DB_AFTER=1 для очистки после тестов
+    clean_after = os.getenv("CLEAN_TEST_DB_AFTER", "0") == "1"
+    if clean_after:
+        async with test_engine.begin() as conn:
+            await conn.run_sync(Base.metadata.drop_all)
+        if test_db_path.exists():
+            test_db_path.unlink()
+        print(f"🗑️  Тестовая БД очищена после тестов: {TEST_DB_PATH}")
 
 
 @pytest.fixture(scope="function")
 async def db_session() -> AsyncGenerator[AsyncSession, None]:
     """Фикстура для получения тестовой сессии БД"""
-    # Создаём таблицы
-    async with test_engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+    global _current_session
     
+    # Используем сессию без автоматического отката
+    # Изоляция обеспечивается через очистку данных в фикстуре clean_db
     async with test_async_session() as session:
+        _current_session = session
         yield session
-    
-    # Очищаем таблицы после теста
-    async with test_engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)
+        _current_session = None
 
 
 @pytest.fixture(scope="function")
@@ -110,4 +154,25 @@ def temp_upload_dir(tmp_path):
     upload_dir = tmp_path / "uploads"
     upload_dir.mkdir()
     return upload_dir
+
+
+@pytest.fixture(scope="function", autouse=False)
+async def clean_db(db_session: AsyncSession):
+    """Очистка БД перед тестом - удаляет все данные из таблиц
+    Выполняется ПОСЛЕ создания фикстур (sample_patient и т.д.), но ПЕРЕД тестом
+    """
+    from sqlalchemy import text
+    
+    # Удаляем все записи в правильном порядке (с учётом внешних ключей)
+    # Порядок важен из-за внешних ключей
+    await db_session.execute(text("DELETE FROM medical_reports"))
+    await db_session.execute(text("DELETE FROM audio_files"))
+    await db_session.execute(text("DELETE FROM appointments"))
+    await db_session.execute(text("DELETE FROM health_indicators"))
+    await db_session.execute(text("DELETE FROM chronic_diseases"))
+    await db_session.execute(text("DELETE FROM recent_diseases"))
+    await db_session.execute(text("DELETE FROM patients"))
+    await db_session.execute(text("DELETE FROM test_data"))
+    await db_session.commit()
+    yield
 

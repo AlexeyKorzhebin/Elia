@@ -11,14 +11,17 @@ from app.models import Patient, Appointment, MedicalReport, AudioFile
 class TestPatientsAPI:
     """Тесты API пациентов"""
     
-    async def test_get_patients_empty(self, client: AsyncClient):
+    async def test_get_patients_empty(self, client: AsyncClient, clean_db):
         """Тест получения пустого списка пациентов"""
         response = await client.get("/api/patients")
         assert response.status_code == 200
         assert response.json() == []
     
-    async def test_get_patients(self, client: AsyncClient, sample_patient: Patient):
+    async def test_get_patients(self, client: AsyncClient, clean_db, sample_patient: Patient):
         """Тест получения списка пациентов"""
+        # clean_db должен быть ПЕРЕД sample_patient в параметрах, чтобы выполниться первым
+        # но на самом деле pytest выполняет фикстуры в порядке зависимостей
+        # Поэтому clean_db выполнится после sample_patient, что нам и нужно
         response = await client.get("/api/patients")
         assert response.status_code == 200
         data = response.json()
@@ -49,7 +52,7 @@ class TestPatientsAPI:
         assert "recent_diseases" in data
         assert "health_indicators" in data
     
-    async def test_search_patients(self, client: AsyncClient, sample_patient: Patient):
+    async def test_search_patients(self, client: AsyncClient, clean_db, sample_patient: Patient):
         """Тест поиска пациентов"""
         response = await client.get("/api/patients?search=Иван")
         assert response.status_code == 200
@@ -67,13 +70,13 @@ class TestPatientsAPI:
 class TestAppointmentsAPI:
     """Тесты API приёмов"""
     
-    async def test_get_appointments_empty(self, client: AsyncClient):
+    async def test_get_appointments_empty(self, client: AsyncClient, clean_db):
         """Тест получения пустого списка приёмов"""
         response = await client.get("/api/appointments")
         assert response.status_code == 200
         assert response.json() == []
     
-    async def test_get_appointments(self, client: AsyncClient, sample_appointment: Appointment):
+    async def test_get_appointments(self, client: AsyncClient, clean_db, sample_appointment: Appointment):
         """Тест получения списка приёмов"""
         response = await client.get("/api/appointments")
         assert response.status_code == 200
