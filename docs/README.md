@@ -24,6 +24,7 @@
 | [DOCKER_GUIDE.md](DOCKER_GUIDE.md) | Полное руководство по Docker |
 | [DOCKER_README.md](DOCKER_README.md) | Дополнительная информация по Docker |
 | [КАК_СОБРАТЬ_DOCKER.md](КАК_СОБРАТЬ_DOCKER.md) | Инструкция по сборке Docker образа |
+| [NGINX_DEPLOYMENT.md](NGINX_DEPLOYMENT.md) | Настройка Nginx для Elia Platform |
 
 ---
 
