@@ -1,6 +1,6 @@
 services:
   elia-app:
-    image: alekseykorzhebin/elia-platform:1.0.0
+    image: alekseykorzhebin/elia-platform:1.0.1
     container_name: elia-platform
     ports:
       - "${PORT:-8000}:8000"

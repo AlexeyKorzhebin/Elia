@@ -187,6 +187,31 @@ async def save_test_data(
     return {"success": True, "message": "Данные сохранены", "updated_at": test_data.updated_at}
 
 
+@app.get("/api/mock-settings")
+async def get_mock_settings(db: AsyncSession = Depends(get_db)):
+    """Получить настройки имитации транскрибации"""
+    duration_data = await crud.get_test_data(db, key="mock_transcription_duration")
+    duration = 5  # По умолчанию 5 секунд
+    if duration_data and duration_data.content:
+        try:
+            duration = int(duration_data.content)
+        except ValueError:
+            pass
+    return {"duration": duration}
+
+
+@app.post("/api/mock-settings")
+async def save_mock_settings(
+    duration: int = Body(..., embed=True),
+    db: AsyncSession = Depends(get_db)
+):
+    """Сохранить настройки имитации транскрибации"""
+    # Ограничиваем значение от 1 до 120 секунд
+    duration = max(1, min(120, duration))
+    await crud.create_or_update_test_data(db, str(duration), key="mock_transcription_duration")
+    return {"success": True, "message": "Настройки сохранены", "duration": duration}
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(

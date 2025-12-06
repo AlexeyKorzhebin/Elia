@@ -8,6 +8,7 @@ const AudioHandler = {
     isRecording: false,
     recordingStartTime: null,
     timerInterval: null,
+    mockDuration: 5, // По умолчанию 5 секунд
     
     /**
      * Инициализация
@@ -16,9 +17,35 @@ const AudioHandler = {
         this.appointmentId = appointmentId;
         this.isRecording = false;
         this.recordingStartTime = null;
+        this._settingsLoaded = false;
+        
+        // Загружаем настройки времени имитации
+        this.loadMockSettings().then(() => {
+            this._settingsLoaded = true;
+        });
         
         // Загружаем данные из БД
         this.loadFromDatabase();
+    },
+    
+    /**
+     * Загрузить настройки времени имитации
+     */
+    async loadMockSettings() {
+        try {
+            const response = await fetch('/api/mock-settings');
+            if (response.ok) {
+                const data = await response.json();
+                this.mockDuration = data.duration || 5;
+                console.log(`AudioHandler: настройки загружены, время имитации: ${this.mockDuration} сек`);
+            } else {
+                console.warn('AudioHandler: ошибка ответа при загрузке настроек, используем значение по умолчанию');
+                this.mockDuration = 5;
+            }
+        } catch (error) {
+            console.error('AudioHandler: ошибка загрузки настроек:', error);
+            this.mockDuration = 5;
+        }
     },
     
     /**
@@ -149,13 +176,26 @@ const AudioHandler = {
     },
     
     /**
-     * Показать экран обработки с этапами (~30 секунд)
+     * Показать экран обработки с этапами
+     * Время берётся из настроек (this.mockDuration в секундах)
      */
     async showProcessingScreen() {
+        // Убеждаемся, что настройки загружены (если ещё не загружены)
+        if (this.mockDuration === 5 && !this._settingsLoaded) {
+            await this.loadMockSettings();
+            this._settingsLoaded = true;
+        }
+        
+        console.log(`AudioHandler: запуск обработки, время имитации: ${this.mockDuration} сек`);
+        
+        // Общее время в миллисекундах из настроек
+        const totalDuration = this.mockDuration * 1000;
+        
+        // Распределяем время между этапами пропорционально
         const stages = [
-            { text: 'Загрузка аудио...', duration: 8000, progress: 30 },
-            { text: 'Извлечение речи...', duration: 12000, progress: 65 },
-            { text: 'Формирование стенограммы...', duration: 10000, progress: 95 }
+            { text: 'Загрузка аудио...', duration: Math.round(totalDuration * 0.27), progress: 30 },
+            { text: 'Извлечение речи...', duration: Math.round(totalDuration * 0.40), progress: 65 },
+            { text: 'Формирование стенограммы...', duration: Math.round(totalDuration * 0.33), progress: 95 }
         ];
         
         const html = `

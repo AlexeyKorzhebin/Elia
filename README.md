@@ -1,6 +1,6 @@
 # Elia AI Platform
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![Version](https://img.shields.io/badge/version-1.0.1-blue)
 ![Python](https://img.shields.io/badge/python-3.11+-green)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-teal)
 ![Docker](https://img.shields.io/badge/docker-ready-blue)

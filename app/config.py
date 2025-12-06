@@ -25,7 +25,7 @@ class Settings(BaseSettings):
     
     # Application
     app_name: str = "Elia AI Platform"
-    version: str = "1.0.0"
+    version: str = "1.0.1"
     
     # Logging
     log_level: str = "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
